@@ -162,7 +162,7 @@ int main(int argc, char **argv)
 	if (address == -1)
 	{
 
-		fprintf(stderr, "Invalid address: %s\n", flags._a);
+		fprintf(stderr, "#OverlayIIgs: Invalid address: %s\n", flags._a);
 		return 1;
 	}
 
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
 	srcFD = open(src, O_RDONLY | O_BINARY);
 	if (srcFD < 0)
 	{
-		fprintf(stderr, "Unable to open input file %s: %s", 
+		fprintf(stderr, "#OverlayIIgs: Unable to open input file %s: %s", 
 			src, strerror(errno));
 		return 1;
 	}
@@ -180,7 +180,7 @@ int main(int argc, char **argv)
 	destFD = open(dest, O_WRONLY | O_CREAT | O_BINARY);
 	if (destFD < 0)
 	{
-		fprintf(stderr, "Unable to open input file %s: %s", 
+		fprintf(stderr, "#OverlayIIgs: Unable to open output file %s: %s", 
 			dest, strerror(errno));
 		close(srcFD);
 		return 1;
@@ -190,7 +190,7 @@ int main(int argc, char **argv)
 	//if (lseek(destFD, address, SEEK_SET) < 0)
 	if (seek_to(destFD, address) < 0)
 	{
-		fprintf(stderr, "Error seeking %s: %s", 
+		fprintf(stderr, "#OverlayIIgs: Error seeking %s: %s", 
 			dest, strerror(errno));
 		close(srcFD);
 		close(destFD);
@@ -213,7 +213,7 @@ int main(int argc, char **argv)
 
 		if (rsize < 0)
 		{
-			fprintf(stderr, "Error reading %s: %s\n", 
+			fprintf(stderr, "#OverlayIIgs: Error reading %s: %s\n", 
 				src, strerror(errno));
 			rv = 1;
 			break;
@@ -222,7 +222,7 @@ int main(int argc, char **argv)
 		wsize = write(destFD, buffer, rsize);
 		if (wsize < 0 || wsize != rsize)
 		{
-			fprintf(stderr, "Error writing %s: %s\n", 
+			fprintf(stderr, "#OverlayIIgs: Error writing %s: %s\n", 
 				dest, strerror(errno));
 			rv = 1;
 			break;	
