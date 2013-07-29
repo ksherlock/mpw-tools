@@ -78,12 +78,9 @@ int main(int argc, char **argv)
 	int i;
 
 
-	optind = FlagsParse(argc, argv);
+	argc = FlagsParse(argc, argv);
 
-	argc -= optind;
-	argv += optind;
-
-	if (argc == 0)
+	if (argc == 1)
 	{
 		FlagsHelp();
 		return 0;
@@ -92,6 +89,7 @@ int main(int argc, char **argv)
 
 	memset(&newFI, 0, sizeof(newFI));
 
+	// todo - m  sets the mod date (. = now)
 	if (!flags._t && !flags._c) return 0;
 
 	if (flags._t)
@@ -114,7 +112,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	for (i = 0; i < argc; ++i)
+	for (i = 1; i < argc; ++i)
 	{
 		FInfo fi;
 		char buffer[256];
