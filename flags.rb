@@ -235,29 +235,39 @@ struct Flags flags;
 int FlagsParse(int argc, char **argv)
 {
   char *cp;
+  char *optarg;
+
   char c;
   int i;
   int j;
-    
+  int eof; // end-of-flags
+  int mindex; // mutation index.
+
   memset(&flags, 0, sizeof(flags));
 
-  for (i = 1; i < argc; ++i)
+  for (i = 1, mindex = 1, eof = 0; i < argc; ++i)
   {    
     cp = argv[i];
     c = cp[0];
       
-    if (c != '-')
-      return i;
+    if (c != '-' || eof)
+    {
+      if (i != mindex) argv[mindex] = argv[i];
+      mindex++;
+      continue;    	
+    }
       
     // -- = end of options.
     if (cp[1] == '-' && cp[2] == 0)
-      return i + 1;
+    {
+      eof = 1;
+      continue;
+    }
    
     // now scan all the flags in the string...
+    optarg = NULL;
     for (j = 1; ; ++j)
-    {
-      int skip = 0;
-          
+    {          
       c = cp[j];
       if (c == 0) break;
           
@@ -276,20 +286,22 @@ int FlagsParse(int argc, char **argv)
 % #
 % if opt.argument
         // -xarg or -x arg
-        skip = 1;
-        if (cp[j + 1])
+        ++j;  
+        if (cp[j])
         {
-          <%= flag_name %> = cp + j + 1;
+          optarg = cp + j;
         }
         else
         {
           if (++i >= argc)
           {
             fputs("option requires an argument -- <%= opt.char %>\n", stderr); 
-            return -1;
+            exit(1);
           }
-          <%= flag_name %> = argv[i];
+          optarg = argv[i];
         }
+        <%= flag_name %> = optarg;
+
 % else # no argument.
         <%= flag_name %> = 1;
 % end # if no argument.
@@ -303,12 +315,12 @@ int FlagsParse(int argc, char **argv)
 
       default:
         fprintf(stderr, "illegal option -- %c\n", c);
-        return -1; 
+        exit(1); 
       }
             
-      if (skip) break;
+      if (optarg) break;
     }    
   }
 
-  return i;
+  return mindex;
 }
