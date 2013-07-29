@@ -26,11 +26,11 @@ LDFLAGS = -w -c 'MPS ' -t MPST \
 
 # LDFLAGS = -d -c 'MPS ' -t MPST
 
-all: Help GetEnv Duplicate SetFile
+all: Help GetEnv Duplicate SetFile OverlayIIgs
 
 clean:
 	rm -f *.c.o
-	rm -f Help GetEnv Duplicate SetFile
+	rm -f Help GetEnv Duplicate SetFile OverlayIIgs
 
 GetEnv: GetEnv.c.o
 	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
@@ -44,6 +44,10 @@ Duplicate: Duplicate.c.o
 
 
 SetFile: SetFile.c.o SetFile-flags.c.o
+	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+
+
+OverlayIIgs: OverlayIIgs.c.o OverlayIIgs-flags.c.o
 	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 
