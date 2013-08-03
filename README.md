@@ -9,3 +9,14 @@ confirmation box). Some are just handy to use.
 
 These are tested under the MPW emulator.  They may or may not actually work
 with a real MPW installation due to implementation differences.
+
+The tools are:
+
+* Duplicate: replacement for the Duplicate command.
+* GetEnv: new command to extract environment variables for use in makefiles.
+* Help: replacement for the Help command.  This version looks for individual
+file in the `$MPW:Help:` directory rather than searching through a single 
+monolithic help file.
+* OverlayIIgs: replacement for the OverlayIIgs command (tested under MPW)
+* SetFile: replacement for the SetFile command.  Currently only filetype and
+* creator type are supported.
