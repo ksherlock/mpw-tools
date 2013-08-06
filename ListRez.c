@@ -178,9 +178,9 @@ int onefile(const char *file)
 	typeListPtr = mapdata + map.offset_typelist + 2;
 	namePtr = mapdata + map.offset_namelist;
 
-	printf("Type       ID    Attr  Size    Name\n");
-	printf("-----      ----- ----- ------- ----\n");
-	//      'CODE'     $0004 $0020 $000018 SANELIB
+	printf("Type       ID    Size    Attr  Name\n");
+	printf("-----      ----- ------- ----- ----\n");
+	//      'CODE'     $0004 $000018 $0020 SANELIB
 
 	for (i = map.count + 1; i; --i, typeListPtr += sizeof(MacResourceTypeList))
 	{
@@ -244,11 +244,11 @@ int onefile(const char *file)
 				return -1;		
 			}
 
-			printf("%-10s $%04x $%04x $%06x %s\n", 
+			printf("%-10s $%04x $%06x $%04x %s\n", 
 				tc, 
 				ref.ResourceID,
+				rSize,
 				ref.attr,
-				rSize, // todo -- size
 				name
 			);
 		}
