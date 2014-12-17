@@ -26,11 +26,11 @@ LDFLAGS = -w -c 'MPS ' -t MPST \
 
 # LDFLAGS = -d -c 'MPS ' -t MPST
 
-all: Help GetEnv Duplicate SetFile OverlayIIgs ListRez ListRezIIgs
+all: Help GetEnv Duplicate SetFile OverlayIIgs ListRez ListRezIIgs MakeEnums
 
 clean:
 	rm -f *.c.o
-	rm -f Help GetEnv Duplicate SetFile OverlayIIgs
+	rm -f Help GetEnv Duplicate SetFile OverlayIIgs MakeEnums
 
 GetEnv: GetEnv.c.o
 	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
@@ -54,6 +54,9 @@ ListRez: ListRez.c.o
 	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 ListRezIIgs: ListRezIIgs.c.o
+	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+
+MakeEnums: MakeEnums.c.o
 	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 #SetFile.c : SetFile.rl
