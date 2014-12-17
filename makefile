@@ -1,15 +1,12 @@
 # makefile
 
-Libraries=~/mpw/Libraries/Libraries
-CLibraries=~/mpw/Libraries/CLibraries
-
 # MPW 3.2
 LIBS = \
-	$(Libraries)/Stubs.o \
-	$(CLibraries)/StdCLib.o \
-	$(Libraries)/Interface.o \
-	$(Libraries)/Runtime.o \
-	$(Libraries)/ToolLibs.o
+	{Libraries}Stubs.o \
+	{CLibraries}StdCLib.o \
+	{Libraries}Interface.o \
+	{Libraries}Runtime.o \
+	{Libraries}ToolLibs.o
 
 LDFLAGS = -w -c 'MPS ' -t MPST \
 	-sn STDIO=Main -sn INTENV=Main -sn %A5Init=Main
@@ -17,12 +14,12 @@ LDFLAGS = -w -c 'MPS ' -t MPST \
 # MPW 3.5
 
 # LIBS = \
-# 	$(CLibraries)/StdCLib.o \
-# 	$(Libraries)/Stubs.o \
-# 	$(Libraries)/IntEnv.o \
-# 	$(Libraries)/MacRuntime.o \
-# 	$(Libraries)/Interface.o \
-# 	$(Libraries)/ToolLibs.o
+# 	{CLibraries}StdCLib.o \
+# 	{Libraries}Stubs.o \
+# 	{Libraries}IntEnv.o \
+# 	{Libraries}MacRuntime.o \
+# 	{Libraries}Interface.o \
+# 	{Libraries}ToolLibs.o
 
 # LDFLAGS = -d -c 'MPS ' -t MPST
 
