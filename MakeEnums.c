@@ -25,7 +25,6 @@ int strcasecmp(const char *s1, const char *s2)
 
 void dump_AccessParam(void)
 {
-
   printf("/ *AccessParam */\n");
 
   printf("_qLink = %u,\n", offsetof(AccessParam, qLink));
@@ -55,6 +54,7 @@ void dump_AccessParam(void)
 void dump_DirInfo(void)
 {
   printf("/* DirInfo */\n");
+
   printf("_qLink = %u,\n", offsetof(DirInfo, qLink));
   printf("_qType = %u,\n", offsetof(DirInfo, qType));
   printf("_ioTrap = %u,\n", offsetof(DirInfo, ioTrap));
@@ -77,15 +77,16 @@ void dump_DirInfo(void)
   printf("_ioDrMdDat = %u,\n", offsetof(DirInfo, ioDrMdDat));
   printf("_ioDrBkDat = %u,\n", offsetof(DirInfo, ioDrBkDat));
   printf("_ioDrFndrInfo = %u,\n", offsetof(DirInfo, ioDrFndrInfo));
-  printf("_ioDrParID = %u,\n", offsetof(DirInfo, ioDrParID));  
+  printf("_ioDrParID = %u,\n", offsetof(DirInfo, ioDrParID));
+
   printf("\n");
   printf("\n");
 }
 
 void dump_HFileInfo(void)
 {
-
   printf("/* HFileInfo */\n");
+
   printf("_qLink = %u,\n", offsetof(HFileInfo, qLink));
   printf("_qType = %u,\n", offsetof(HFileInfo, qType));
   printf("_ioTrap = %u,\n", offsetof(HFileInfo, ioTrap));
@@ -114,16 +115,42 @@ void dump_HFileInfo(void)
   printf("_ioFlXFndrInfo = %u,\n", offsetof(HFileInfo, ioFlXFndrInfo));
   printf("_ioFlParID = %u,\n", offsetof(HFileInfo, ioFlParID));
   printf("_ioFlClpSiz = %u,\n", offsetof(HFileInfo, ioFlClpSiz));
-  printf("\n");
-  printf("\n");
 
+  printf("\n");
+  printf("\n");
 }
 
 
+void dump_IOParam(void)
+{
+  printf("/* IOParam */\n");
+
+  printf("_qLink = %u,\n", offsetof(IOParam, qLink));
+  printf("_qType = %u,\n", offsetof(IOParam, qType));
+  printf("_ioTrap = %u,\n", offsetof(IOParam, ioTrap));
+  printf("_ioCmdAddr = %u,\n", offsetof(IOParam, ioCmdAddr));
+  printf("_ioCompletion = %u,\n", offsetof(IOParam, ioCompletion));
+  printf("_ioResult = %u,\n", offsetof(IOParam, ioResult));
+  printf("_ioNamePtr = %u,\n", offsetof(IOParam, ioNamePtr));
+  printf("_ioVRefNum = %u,\n", offsetof(IOParam, ioVRefNum));
+  printf("_ioRefNum = %u,\n", offsetof(IOParam, ioRefNum));
+  printf("_ioVersNum = %u,\n", offsetof(IOParam, ioVersNum));
+  printf("_ioPermssn = %u,\n", offsetof(IOParam, ioPermssn));
+  printf("_ioMisc = %u,\n", offsetof(IOParam, ioMisc));
+  printf("_ioBuffer = %u,\n", offsetof(IOParam, ioBuffer));
+  printf("_ioReqCount = %u,\n", offsetof(IOParam, ioReqCount));
+  printf("_ioActCount = %u,\n", offsetof(IOParam, ioActCount));
+  printf("_ioPosMode = %u,\n", offsetof(IOParam, ioPosMode));
+  printf("_ioPosOffset = %u,\n", offsetof(IOParam, ioPosOffset));
+
+  printf("\n");
+  printf("\n");
+}
+
 void dump_WDPBRec(void)
 {
-
   printf("/* WDPBRec */\n");
+
   printf("_qLink = %u,\n", offsetof(WDPBRec, qLink));
   printf("_qType = %u,\n", offsetof(WDPBRec, qType));
   printf("_ioTrap = %u,\n", offsetof(WDPBRec, ioTrap));
@@ -153,6 +180,7 @@ int main(int argc, char **argv)
     dump_AccessParam();
     dump_DirInfo();
     dump_HFileInfo();
+    dump_IOParam();
     dump_WDPBRec();
   }
 
@@ -163,12 +191,23 @@ int main(int argc, char **argv)
     {
       case 'a':
         DUMP(AccessParam)
+        break;
+
       case 'd':
         DUMP(DirInfo)
+        break;
+
       case 'h':
         DUMP(HFileInfo)
+        break;
+
+      case 'i':
+        DUMP(IOParam);
+        break;
+
       case 'w':
         DUMP(WDPBRec)
+        break;
     }
 
     fprintf(stderr, "Unsupported struct: %s\n", name);
