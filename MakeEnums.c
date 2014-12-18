@@ -21,6 +21,37 @@ int strcasecmp(const char *s1, const char *s2)
   }
 }
 
+#define msizeof(type, member) sizeof( ((type *)0)->member)
+
+void dump_AccessParam(void)
+{
+
+  printf("/ *AccessParam */\n");
+
+  printf("_qLink = %u,\n", offsetof(AccessParam, qLink));
+  printf("_qType = %u,\n", offsetof(AccessParam, qType));
+  printf("_ioTrap = %u,\n", offsetof(AccessParam, ioTrap));
+  printf("_ioCmdAddr = %u,\n", offsetof(AccessParam, ioCmdAddr));
+  printf("_ioCompletion = %u,\n", offsetof(AccessParam, ioCompletion));
+  printf("_ioResult = %u,\n", offsetof(AccessParam, ioResult));
+  printf("_ioNamePtr = %u,\n", offsetof(AccessParam, ioNamePtr));
+  printf("_ioVRefNum = %u,\n", offsetof(AccessParam, ioVRefNum));
+  printf("_filler3 = %u,\n", offsetof(AccessParam, filler3));
+  printf("_ioDenyModes = %u,\n", offsetof(AccessParam, ioDenyModes));
+  printf("_filler4 = %u,\n", offsetof(AccessParam, filler4));
+  printf("_filler5 = %u,\n", offsetof(AccessParam, filler5));
+  printf("_ioACUser = %u,\n", offsetof(AccessParam, ioACUser));
+  printf("_filler6 = %u,\n", offsetof(AccessParam, filler6));
+  printf("_ioACOwnerID = %u,\n", offsetof(AccessParam, ioACOwnerID));
+  printf("_ioACGroupID = %u,\n", offsetof(AccessParam, ioACGroupID));
+  printf("_ioACAccess = %u,\n", offsetof(AccessParam, ioACAccess));
+  printf("_ioDirID = %u,\n", offsetof(AccessParam, ioDirID));
+
+  printf("\n");
+  printf("\n");
+
+}
+
 void dump_DirInfo(void)
 {
   printf("/* DirInfo */\n");
@@ -112,12 +143,14 @@ void dump_WDPBRec(void)
   printf("\n");
 }
 
+#define DUMP(xname) if (strcasecmp(name, #xname) == 0) { dump_ ## xname(); continue; }
 int main(int argc, char **argv)
 {
   int i;
 
   if (argc == 1)
   {
+    dump_AccessParam();
     dump_DirInfo();
     dump_HFileInfo();
     dump_WDPBRec();
@@ -126,9 +159,18 @@ int main(int argc, char **argv)
   for (i = 1; i < argc; ++i)
   {
     const char *name = argv[i];
-    if (strcasecmp(name, "DirInfo") == 0) { dump_DirInfo(); continue; }
-    if (strcasecmp(name, "HFileInfo") == 0) { dump_HFileInfo(); continue; }
-    if (strcasecmp(name, "WDPBRec") == 0) { dump_WDPBRec(); continue; }
+    switch (tolower(name[0]))
+    {
+      case 'a':
+        DUMP(AccessParam)
+      case 'd':
+        DUMP(DirInfo)
+      case 'h':
+        DUMP(HFileInfo)
+      case 'w':
+        DUMP(WDPBRec)
+    }
+
     fprintf(stderr, "Unsupported struct: %s\n", name);
   }
 
