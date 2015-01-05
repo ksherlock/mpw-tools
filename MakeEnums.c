@@ -87,30 +87,30 @@ void dump_FileParam(void)
 {
   printf("/* FileParam */\n");
 
-  printf("_qLink = %u,\n", offsetof(FileParam, qLink));           
-  printf("_qType = %u,\n", offsetof(FileParam, qType));           
-  printf("_ioTrap = %u,\n", offsetof(FileParam, ioTrap));          
-  printf("_ioCmdAddr = %u,\n", offsetof(FileParam, ioCmdAddr));       
-  printf("_ioCompletion = %u,\n", offsetof(FileParam, ioCompletion));    
-  printf("_ioResult = %u,\n", offsetof(FileParam, ioResult));        
-  printf("_ioNamePtr = %u,\n", offsetof(FileParam, ioNamePtr));       
-  printf("_ioVRefNum = %u,\n", offsetof(FileParam, ioVRefNum));       
-  printf("_ioFRefNum = %u,\n", offsetof(FileParam, ioFRefNum));       
-  printf("_ioFVersNum = %u,\n", offsetof(FileParam, ioFVersNum));      
+  printf("_qLink = %u,\n", offsetof(FileParam, qLink));
+  printf("_qType = %u,\n", offsetof(FileParam, qType));
+  printf("_ioTrap = %u,\n", offsetof(FileParam, ioTrap));
+  printf("_ioCmdAddr = %u,\n", offsetof(FileParam, ioCmdAddr));
+  printf("_ioCompletion = %u,\n", offsetof(FileParam, ioCompletion));
+  printf("_ioResult = %u,\n", offsetof(FileParam, ioResult));
+  printf("_ioNamePtr = %u,\n", offsetof(FileParam, ioNamePtr));
+  printf("_ioVRefNum = %u,\n", offsetof(FileParam, ioVRefNum));
+  printf("_ioFRefNum = %u,\n", offsetof(FileParam, ioFRefNum));
+  printf("_ioFVersNum = %u,\n", offsetof(FileParam, ioFVersNum));
   printf("_filler1 = %u,\n", offsetof(FileParam, filler1));
-  printf("_ioFDirIndex = %u,\n", offsetof(FileParam, ioFDirIndex));     
-  printf("_ioFlAttrib = %u,\n", offsetof(FileParam, ioFlAttrib));      
-  printf("_ioFlVersNum = %u,\n", offsetof(FileParam, ioFlVersNum));     
-  printf("_ioFlFndrInfo = %u,\n", offsetof(FileParam, ioFlFndrInfo));    
-  printf("_ioFlNum = %u,\n", offsetof(FileParam, ioFlNum));         
-  printf("_ioFlStBlk = %u,\n", offsetof(FileParam, ioFlStBlk));       
-  printf("_ioFlLgLen = %u,\n", offsetof(FileParam, ioFlLgLen));       
-  printf("_ioFlPyLen = %u,\n", offsetof(FileParam, ioFlPyLen));       
-  printf("_ioFlRStBlk = %u,\n", offsetof(FileParam, ioFlRStBlk));      
-  printf("_ioFlRLgLen = %u,\n", offsetof(FileParam, ioFlRLgLen));      
-  printf("_ioFlRPyLen = %u,\n", offsetof(FileParam, ioFlRPyLen));      
-  printf("_ioFlCrDat = %u,\n", offsetof(FileParam, ioFlCrDat));       
-  printf("_ioFlMdDat = %u,\n", offsetof(FileParam, ioFlMdDat));       
+  printf("_ioFDirIndex = %u,\n", offsetof(FileParam, ioFDirIndex));
+  printf("_ioFlAttrib = %u,\n", offsetof(FileParam, ioFlAttrib));
+  printf("_ioFlVersNum = %u,\n", offsetof(FileParam, ioFlVersNum));
+  printf("_ioFlFndrInfo = %u,\n", offsetof(FileParam, ioFlFndrInfo));
+  printf("_ioFlNum = %u,\n", offsetof(FileParam, ioFlNum));
+  printf("_ioFlStBlk = %u,\n", offsetof(FileParam, ioFlStBlk));
+  printf("_ioFlLgLen = %u,\n", offsetof(FileParam, ioFlLgLen));
+  printf("_ioFlPyLen = %u,\n", offsetof(FileParam, ioFlPyLen));
+  printf("_ioFlRStBlk = %u,\n", offsetof(FileParam, ioFlRStBlk));
+  printf("_ioFlRLgLen = %u,\n", offsetof(FileParam, ioFlRLgLen));
+  printf("_ioFlRPyLen = %u,\n", offsetof(FileParam, ioFlRPyLen));
+  printf("_ioFlCrDat = %u,\n", offsetof(FileParam, ioFlCrDat));
+  printf("_ioFlMdDat = %u,\n", offsetof(FileParam, ioFlMdDat));
 
   printf("\n");
   printf("\n");
@@ -157,14 +157,14 @@ void dump_HFileParam()
 {
   printf("/* HFileParam */\n");
 
-  printf("_qLink = %u,\n", offsetof(HFileParam, qLink));               
-  printf("_qType = %u,\n", offsetof(HFileParam, qType));               
-  printf("_ioTrap = %u,\n", offsetof(HFileParam, ioTrap));              
-  printf("_ioCmdAddr = %u,\n", offsetof(HFileParam, ioCmdAddr));           
-  printf("_ioCompletion = %u,\n", offsetof(HFileParam, ioCompletion));        
-  printf("_ioResult = %u,\n", offsetof(HFileParam, ioResult));            
-  printf("_ioNamePtr = %u,\n", offsetof(HFileParam, ioNamePtr));           
-  printf("_ioVRefNum = %u,\n", offsetof(HFileParam, ioVRefNum));           
+  printf("_qLink = %u,\n", offsetof(HFileParam, qLink));
+  printf("_qType = %u,\n", offsetof(HFileParam, qType));
+  printf("_ioTrap = %u,\n", offsetof(HFileParam, ioTrap));
+  printf("_ioCmdAddr = %u,\n", offsetof(HFileParam, ioCmdAddr));
+  printf("_ioCompletion = %u,\n", offsetof(HFileParam, ioCompletion));
+  printf("_ioResult = %u,\n", offsetof(HFileParam, ioResult));
+  printf("_ioNamePtr = %u,\n", offsetof(HFileParam, ioNamePtr));
+  printf("_ioVRefNum = %u,\n", offsetof(HFileParam, ioVRefNum));
   printf("_ioFRefNum = %u,\n", offsetof(HFileParam, ioFRefNum));
   printf("_ioFVersNum = %u,\n", offsetof(HFileParam, ioFVersNum));
   printf("_filler1 = %u,\n", offsetof(HFileParam, filler1));
@@ -192,14 +192,14 @@ void dump_HIOParam(void)
 {
   printf("/* HIOParam */\n");
 
-  printf("_qLink = %u,\n", offsetof(HIOParam, qLink));            
-  printf("_qType = %u,\n", offsetof(HIOParam, qType));            
-  printf("_ioTrap = %u,\n", offsetof(HIOParam, ioTrap));           
-  printf("_ioCmdAddr = %u,\n", offsetof(HIOParam, ioCmdAddr));        
-  printf("_ioCompletion = %u,\n", offsetof(HIOParam, ioCompletion));     
-  printf("_ioResult = %u,\n", offsetof(HIOParam, ioResult));         
-  printf("_ioNamePtr = %u,\n", offsetof(HIOParam, ioNamePtr));        
-  printf("_ioVRefNum = %u,\n", offsetof(HIOParam, ioVRefNum));        
+  printf("_qLink = %u,\n", offsetof(HIOParam, qLink));
+  printf("_qType = %u,\n", offsetof(HIOParam, qType));
+  printf("_ioTrap = %u,\n", offsetof(HIOParam, ioTrap));
+  printf("_ioCmdAddr = %u,\n", offsetof(HIOParam, ioCmdAddr));
+  printf("_ioCompletion = %u,\n", offsetof(HIOParam, ioCompletion));
+  printf("_ioResult = %u,\n", offsetof(HIOParam, ioResult));
+  printf("_ioNamePtr = %u,\n", offsetof(HIOParam, ioNamePtr));
+  printf("_ioVRefNum = %u,\n", offsetof(HIOParam, ioVRefNum));
   printf("_ioRefNum = %u,\n", offsetof(HIOParam, ioRefNum));
   printf("_ioVersNum = %u,\n", offsetof(HIOParam, ioVersNum));
   printf("_ioPermssn = %u,\n", offsetof(HIOParam, ioPermssn));
@@ -209,6 +209,47 @@ void dump_HIOParam(void)
   printf("_ioActCount = %u,\n", offsetof(HIOParam, ioActCount));
   printf("_ioPosMode = %u,\n", offsetof(HIOParam, ioPosMode));
   printf("_ioPosOffset = %u,\n", offsetof(HIOParam, ioPosOffset));
+
+  printf("\n");
+  printf("\n");
+}
+
+void dump_HVolumeParam(void)
+{
+  printf("/* HVolumeParam */\n");
+
+  printf("_qLink = %u,\n", offsetof(HVolumeParam, qLink));
+  printf("_qType = %u,\n", offsetof(HVolumeParam, qType));
+  printf("_ioTrap = %u,\n", offsetof(HVolumeParam, ioTrap));
+  printf("_ioCmdAddr = %u,\n", offsetof(HVolumeParam, ioCmdAddr));
+  printf("_ioCompletion = %u,\n", offsetof(HVolumeParam, ioCompletion));
+  printf("_ioResult = %u,\n", offsetof(HVolumeParam, ioResult));
+  printf("_ioNamePtr = %u,\n", offsetof(HVolumeParam, ioNamePtr));
+  printf("_ioVRefNum = %u,\n", offsetof(HVolumeParam, ioVRefNum));
+  printf("_filler2 = %u,\n", offsetof(HVolumeParam, filler2));
+  printf("_ioVolIndex = %u,\n", offsetof(HVolumeParam, ioVolIndex));
+  printf("_ioVCrDate = %u,\n", offsetof(HVolumeParam, ioVCrDate));
+  printf("_ioVLsMod = %u,\n", offsetof(HVolumeParam, ioVLsMod));
+  printf("_ioVAtrb = %u,\n", offsetof(HVolumeParam, ioVAtrb));
+  printf("_ioVNmFls = %u,\n", offsetof(HVolumeParam, ioVNmFls));
+  printf("_ioVBitMap = %u,\n", offsetof(HVolumeParam, ioVBitMap));
+  printf("_ioAllocPtr = %u,\n", offsetof(HVolumeParam, ioAllocPtr));
+  printf("_ioVNmAlBlks = %u,\n", offsetof(HVolumeParam, ioVNmAlBlks));
+  printf("_ioVAlBlkSiz = %u,\n", offsetof(HVolumeParam, ioVAlBlkSiz));
+  printf("_ioVClpSiz = %u,\n", offsetof(HVolumeParam, ioVClpSiz));
+  printf("_ioAlBlSt = %u,\n", offsetof(HVolumeParam, ioAlBlSt));
+  printf("_ioVNxtCNID = %u,\n", offsetof(HVolumeParam, ioVNxtCNID));
+  printf("_ioVFrBlk = %u,\n", offsetof(HVolumeParam, ioVFrBlk));
+  printf("_ioVSigWord = %u,\n", offsetof(HVolumeParam, ioVSigWord));
+  printf("_ioVDrvInfo = %u,\n", offsetof(HVolumeParam, ioVDrvInfo));
+  printf("_ioVDRefNum = %u,\n", offsetof(HVolumeParam, ioVDRefNum));
+  printf("_ioVFSID = %u,\n", offsetof(HVolumeParam, ioVFSID));
+  printf("_ioVBkUp = %u,\n", offsetof(HVolumeParam, ioVBkUp));
+  printf("_ioVSeqNum = %u,\n", offsetof(HVolumeParam, ioVSeqNum));
+  printf("_ioVWrCnt = %u,\n", offsetof(HVolumeParam, ioVWrCnt));
+  printf("_ioVFilCnt = %u,\n", offsetof(HVolumeParam, ioVFilCnt));
+  printf("_ioVDirCnt = %u,\n", offsetof(HVolumeParam, ioVDirCnt));
+  printf("_ioVFndrInfo = %u,\n", offsetof(HVolumeParam, ioVFndrInfo));
 
   printf("\n");
   printf("\n");
@@ -235,6 +276,37 @@ void dump_IOParam(void)
   printf("_ioActCount = %u,\n", offsetof(IOParam, ioActCount));
   printf("_ioPosMode = %u,\n", offsetof(IOParam, ioPosMode));
   printf("_ioPosOffset = %u,\n", offsetof(IOParam, ioPosOffset));
+
+  printf("\n");
+  printf("\n");
+}
+
+void dump_VolumeParam(void)
+{
+  printf("/* VolumeParam */\n");
+
+  printf("_qLink = %u,\n", offsetof(VolumeParam, qLink));
+  printf("_qType = %u,\n", offsetof(VolumeParam, qType));
+  printf("_ioTrap = %u,\n", offsetof(VolumeParam, ioTrap));
+  printf("_ioCmdAddr = %u,\n", offsetof(VolumeParam, ioCmdAddr));
+  printf("_ioCompletion = %u,\n", offsetof(VolumeParam, ioCompletion));
+  printf("_ioResult = %u,\n", offsetof(VolumeParam, ioResult));
+  printf("_ioNamePtr = %u,\n", offsetof(VolumeParam, ioNamePtr));
+  printf("_ioVRefNum = %u,\n", offsetof(VolumeParam, ioVRefNum));
+  printf("_filler2 = %u,\n", offsetof(VolumeParam, filler2));
+  printf("_ioVolIndex = %u,\n", offsetof(VolumeParam, ioVolIndex));
+  printf("_ioVCrDate = %u,\n", offsetof(VolumeParam, ioVCrDate));
+  printf("_ioVLsBkUp = %u,\n", offsetof(VolumeParam, ioVLsBkUp));
+  printf("_ioVAtrb = %u,\n", offsetof(VolumeParam, ioVAtrb));
+  printf("_ioVNmFls = %u,\n", offsetof(VolumeParam, ioVNmFls));
+  printf("_ioVDirSt = %u,\n", offsetof(VolumeParam, ioVDirSt));
+  printf("_ioVBlLn = %u,\n", offsetof(VolumeParam, ioVBlLn));
+  printf("_ioVNmAlBlks = %u,\n", offsetof(VolumeParam, ioVNmAlBlks));
+  printf("_ioVAlBlkSiz = %u,\n", offsetof(VolumeParam, ioVAlBlkSiz));
+  printf("_ioVClpSiz = %u,\n", offsetof(VolumeParam, ioVClpSiz));
+  printf("_ioAlBlSt = %u,\n", offsetof(VolumeParam, ioAlBlSt));
+  printf("_ioVNxtFNum = %u,\n", offsetof(VolumeParam, ioVNxtFNum));
+  printf("_ioVFrBlk = %u,\n", offsetof(VolumeParam, ioVFrBlk));
 
   printf("\n");
   printf("\n");
@@ -275,8 +347,10 @@ int main(int argc, char **argv)
     dump_HFileInfo();
     dump_HFileParam();
     dump_HIOParam();
+    dump_HVolumeParam();
     dump_FileParam();
     dump_IOParam();
+    dump_VolumeParam();
     dump_WDPBRec();
   }
 
@@ -301,10 +375,15 @@ int main(int argc, char **argv)
         DUMP(HFileInfo)
         DUMP(HFileParam)
         DUMP(HIOParam)
+        DUMP(HVolumeParam)
         break;
 
       case 'i':
         DUMP(IOParam);
+        break;
+
+      case 'v':
+        DUMP(VolumeParam);
         break;
 
       case 'w':
