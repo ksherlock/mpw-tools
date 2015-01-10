@@ -199,6 +199,8 @@ int onefile(const char *file)
 
 		uint8_t *refPtr;
 
+		// todo -- should verify typListPtr, refPtr, namePtr are within the map.
+		
 		memcpy(&typeList, typeListPtr, sizeof(typeList));
 
 		tc = TypeCode(typeList.ResourceType);
