@@ -111,7 +111,7 @@ int onefile(const char *file)
 	uint8_t *mapdata;
 	uint8_t *typeListPtr;
 	uint8_t *namePtr;
-	int i, j;
+	int i, count;
 
 	MacResourceHeader header;
 	MacResourceMap map;
@@ -137,6 +137,13 @@ int onefile(const char *file)
 		fprintf(stderr, "# %s: Not a macintosh resource fork.\n", file);
 		close(fd);
 		return -1;
+	}
+
+	// a couple sanity checks
+	if (header.length_rmap == 0 || header.offset_rmap < sizeof(header))
+	{
+		fprintf(stderr, "# %s: Not a macintosh resource fork.\n", file);
+		close(fd);
 	}
 
 	mapdata = malloc(header.length_rmap);
@@ -182,10 +189,13 @@ int onefile(const char *file)
 	printf("-----      ----- ------- ----- ----\n");
 	//      'CODE'     $0004 $000018 $0020 SANELIB
 
-	for (i = map.count + 1; i; --i, typeListPtr += sizeof(MacResourceTypeList))
+	// map.count is $ffff for an empty file.
+	count = (map.count + 1) & 0xffff;
+	for (i = 0; i < count; ++i, typeListPtr += sizeof(MacResourceTypeList))
 	{
 		MacResourceTypeList typeList;
 		const char *tc;
+		int j, count;
 
 		uint8_t *refPtr;
 
@@ -194,7 +204,8 @@ int onefile(const char *file)
 		tc = TypeCode(typeList.ResourceType);
 
 		refPtr = mapdata + map.offset_typelist + typeList.offset;
-		for (j = typeList.count + 1; j; --j, refPtr += sizeof(MacReferenceList))
+		count  = (typeList.count + 1) & 0xffff;
+		for (j = 0; j < count; ++j, refPtr += sizeof(MacReferenceList))
 		{
 			MacReferenceList ref;
 			char name[256];
