@@ -335,6 +335,26 @@ void dump_WDPBRec(void)
   printf("\n");
 }
 
+void dump_SysEnvRec(void)
+{
+  printf("/* SysEnvRec */\n");
+
+  printf("_environsVersion = %u,\n", offsetof(SysEnvRec, environsVersion));
+  printf("_machineType = %u,\n", offsetof(SysEnvRec, machineType));
+  printf("_systemVersion = %u,\n", offsetof(SysEnvRec, systemVersion));
+  printf("_processor = %u,\n", offsetof(SysEnvRec, processor));
+  printf("_hasFPU = %u,\n", offsetof(SysEnvRec, hasFPU));
+  printf("_hasColorQD = %u,\n", offsetof(SysEnvRec, hasColorQD));
+  printf("_keyBoardType = %u,\n", offsetof(SysEnvRec, keyBoardType));
+  printf("_atDrvrVersNum = %u,\n", offsetof(SysEnvRec, atDrvrVersNum));
+  printf("_sysVRefNum = %u,\n", offsetof(SysEnvRec, sysVRefNum));
+
+  printf("\n");
+  printf("\n");
+}
+
+
+
 #define DUMP(xname) if (strcasecmp(name, #xname) == 0) { dump_ ## xname(); continue; }
 int main(int argc, char **argv)
 {
@@ -352,6 +372,7 @@ int main(int argc, char **argv)
     dump_IOParam();
     dump_VolumeParam();
     dump_WDPBRec();
+    dump_SysEnvRec();
   }
 
   for (i = 1; i < argc; ++i)
@@ -380,6 +401,10 @@ int main(int argc, char **argv)
 
       case 'i':
         DUMP(IOParam);
+        break;
+
+      case 's':
+        DUMP(SysEnvRec);
         break;
 
       case 'v':

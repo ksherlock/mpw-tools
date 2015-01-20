@@ -1,5 +1,7 @@
 # makefile
 
+MPW ?= mpw
+
 # MPW 3.2
 LIBS = \
 	{Libraries}Stubs.o \
@@ -30,41 +32,35 @@ clean:
 	rm -f Help GetEnv Duplicate SetFile OverlayIIgs MakeEnums
 
 GetEnv: GetEnv.c.o
-	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 Help: Help.c.o
-	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 
 Duplicate: Duplicate.c.o
-	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 
 SetFile: SetFile.c.o SetFile-flags.c.o
-	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 
 OverlayIIgs: OverlayIIgs.c.o OverlayIIgs-flags.c.o
-	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 ListRez: ListRez.c.o
-	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 ListRezIIgs: ListRezIIgs.c.o
-	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 MakeEnums: MakeEnums.c.o
-	mpw Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 #SetFile.c : SetFile.rl
 #	ragel -G2 -p -m -o $@ $<
 
 
 %.c.o : %.c
-	mpw SC -p $< -o $@
-
-# GetEnv.c.o : GetEnv.c
-# 	mpw SC -p GetEnv.c -o $@
-
-# Help.c.o : Help.c
-# 	mpw SC -p Help.c -o $@
+	$(MPW) SC -p $< -o $@
