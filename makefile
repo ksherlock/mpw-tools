@@ -25,7 +25,7 @@ LDFLAGS = -w -c 'MPS ' -t MPST \
 
 # LDFLAGS = -d -c 'MPS ' -t MPST
 
-all: Help GetEnv Duplicate SetFile OverlayIIgs ListRez ListRezIIgs MakeEnums
+all: Help GetEnv Duplicate SetFile OverlayIIgs ListRez ListRezIIgs MakeEnums ReadGlobal
 
 clean:
 	rm -f *.c.o
@@ -58,8 +58,14 @@ ListRezIIgs: ListRezIIgs.c.o
 MakeEnums: MakeEnums.c.o
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
+ReadGlobal: ReadGlobal.c.o
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+
 #SetFile.c : SetFile.rl
 #	ragel -G2 -p -m -o $@ $<
+
+#ReadGlobal.c : ReadGlobal.rc
+#	re2c -o $@ $<
 
 
 %.c.o : %.c
