@@ -3,26 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 
-int strcasecmp(const char *a, const char *b)
-{
-	for(; ; ++a, ++b) {
-		char aa = *a;
-		char bb = *b;
-
-		aa = tolower(aa);
-		bb = tolower(bb);
-
-		if (aa == 0 || bb == 0)
-		{
-			if (aa) return 1;
-			if (bb) return -1;
-			return 0;
-		}
-
-		if (aa < bb) return -1;
-		if (aa > bb) return 1;
-	}
-}
+#include "libc/libc.h"
 
 unsigned long GlobalAddress(const char *name, int *numeric)
 {

@@ -13,6 +13,9 @@ LIBS = \
 LDFLAGS = -w -c 'MPS ' -t MPST \
 	-sn STDIO=Main -sn INTENV=Main -sn %A5Init=Main
 
+LIBFLAGS = -P
+SCFLAGS = -P
+
 # MPW 3.5
 
 # LIBS = \
@@ -28,8 +31,12 @@ LDFLAGS = -w -c 'MPS ' -t MPST \
 all: Help GetEnv Duplicate SetFile OverlayIIgs ListRez ListRezIIgs MakeEnums ReadGlobal
 
 clean:
-	rm -f *.c.o
-	rm -f Help GetEnv Duplicate SetFile OverlayIIgs MakeEnums
+	rm -f *.o
+	rm -f Help GetEnv Duplicate SetFile OverlayIIgs MakeEnums ReadGlobal
+	rm -f libc/libc libc/*.o
+
+libc/libc: libc/strcasecmp.c.o
+	$(MPW) Lib $(LIBFLAGS) -o $@ $^ 
 
 GetEnv: GetEnv.c.o
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
@@ -55,10 +62,10 @@ ListRez: ListRez.c.o
 ListRezIIgs: ListRezIIgs.c.o
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
-MakeEnums: MakeEnums.c.o
+MakeEnums: MakeEnums.c.o libc/libc
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
-ReadGlobal: ReadGlobal.c.o
+ReadGlobal: ReadGlobal.c.o libc/libc
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 #SetFile.c : SetFile.rl
@@ -69,4 +76,4 @@ ReadGlobal: ReadGlobal.c.o
 
 
 %.c.o : %.c
-	$(MPW) SC -p $< -o $@
+	$(MPW) SC $(SCFLAGS) $< -o $@

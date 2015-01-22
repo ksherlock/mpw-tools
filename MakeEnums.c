@@ -4,22 +4,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-int strcasecmp(const char *s1, const char *s2)
-{
-  int a, b;
-  for (;;)
-  {
-    a = tolower(*s1++);
-    b = tolower(*s2++);
-
-    if (a < b) return -1;
-    if (a > b) return 1;
-
-    // a == b.
-    if (a == 0) return 0;
-
-  }
-}
+#include "libc/libc.h"
 
 #define msizeof(type, member) sizeof( ((type *)0)->member)
 
