@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <Processes.h>
 
 #include "libc/libc.h"
 
@@ -339,6 +340,28 @@ void dump_SysEnvRec(void)
 }
 
 
+void dump_ProcessInfoRec(void)
+{
+  printf("/* ProcessInfoRec */\n");
+
+  printf("_processInfoLength = %u,\n", offsetof(ProcessInfoRec, processInfoLength));
+  printf("_processName = %u,\n", offsetof(ProcessInfoRec, processName));
+  printf("_processNumber = %u,\n", offsetof(ProcessInfoRec, processNumber));
+  printf("_processType = %u,\n", offsetof(ProcessInfoRec, processType));
+  printf("_processSignature = %u,\n", offsetof(ProcessInfoRec, processSignature));
+  printf("_processMode = %u,\n", offsetof(ProcessInfoRec, processMode));
+  printf("_processLocation = %u,\n", offsetof(ProcessInfoRec, processLocation));
+  printf("_processSize = %u,\n", offsetof(ProcessInfoRec, processSize));
+  printf("_processFreeMem = %u,\n", offsetof(ProcessInfoRec, processFreeMem));
+  printf("_processLauncher = %u,\n", offsetof(ProcessInfoRec, processLauncher));
+  printf("_processLaunchDate = %u,\n", offsetof(ProcessInfoRec, processLaunchDate));
+  printf("_processActiveTime = %u,\n", offsetof(ProcessInfoRec, processActiveTime));
+  printf("_processAppSpec = %u,\n", offsetof(ProcessInfoRec, processAppSpec));
+
+  printf("\n");
+  printf("\n");
+}
+
 
 #define DUMP(xname) if (strcasecmp(name, #xname) == 0) { dump_ ## xname(); continue; }
 int main(int argc, char **argv)
@@ -358,6 +381,7 @@ int main(int argc, char **argv)
     dump_VolumeParam();
     dump_WDPBRec();
     dump_SysEnvRec();
+    dump_ProcessInfoRec();
   }
 
   for (i = 1; i < argc; ++i)
@@ -386,6 +410,10 @@ int main(int argc, char **argv)
 
       case 'i':
         DUMP(IOParam);
+        break;
+
+      case 'p':
+        DUMP(ProcessInfoRec);
         break;
 
       case 's':
