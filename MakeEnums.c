@@ -170,7 +170,7 @@ void dump_HFileParam()
 
   printf("\n");
   printf("\n");
-};
+}
 
 
 
