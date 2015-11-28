@@ -28,7 +28,7 @@ LIBS = \
 
 # LDFLAGS = -d -c 'MPS ' -t MPST
 
-all: Help GetEnv Duplicate SetFile OverlayIIgs ListRez ListRezIIgs MakeEnums ReadGlobal
+all: Help GetEnv Duplicate SetFile OverlayIIgs ListRez ListRezIIgs MakeEnums ReadGlobal Parameters
 
 clean:
 	rm -f *.o
@@ -66,6 +66,9 @@ MakeEnums: MakeEnums.c.o libc/libc
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 ReadGlobal: ReadGlobal.c.o libc/libc
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+
+Parameters: Parameters.c.o
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 #SetFile.c : SetFile.rl
