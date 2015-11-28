@@ -368,5 +368,10 @@ int main(int argc, char **argv)
 		ok = copyFork(src, dest, 1);
 	}
 
+	// copy the finder info if -r and -d not specified.
+	if (!opts['d' - 'a'] && !opts['r' - 'a']) {
+		ok = copyFinderInfo(src, dest);
+	}
+
 	return ok;
 }
