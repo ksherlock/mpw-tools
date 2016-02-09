@@ -143,6 +143,12 @@ argf_each {|filename, file|
 
 	help = data['help']
 	options = data['options']
+	case_insensitive = data['case_insensitive'] || false
+
+	# prevent warnings for unused vars.
+	options = options
+	help = help
+	case_insensitive = case_insensitive
 
 	# options is an array of items which may be hashes, strings, or numbers.
 	# normalize them.
@@ -168,6 +174,12 @@ argf_each {|filename, file|
 
 		Option.new(opt)
 	}
+
+	if case_insensitive
+		options.each {|opt|
+			opt.char.downcase!
+		}
+	end
 
 	#data[options] = options
 	# check for help?
@@ -281,6 +293,9 @@ int FlagsParse(int argc, char **argv)
 % #
 % options.each do |opt|
       case '<%= escape_cstr(opt.char) %>':
+% if case_insensitive && opt.char =~ /^[a-z]$/
+      case '<%= escape_cstr(opt.char.upcase) %>':
+% end
 % # check for an argument.
 % flag_name = 'flags.' + opt.flag_name
 % #
