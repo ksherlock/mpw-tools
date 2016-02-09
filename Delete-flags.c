@@ -66,7 +66,7 @@ int FlagsParse(int argc, char **argv)
       {
       case 'h':
         FlagsHelp();
-        break;
+        exit(0);
       case 'y':
       case 'Y':
         flags._y = 1;
@@ -89,7 +89,7 @@ int FlagsParse(int argc, char **argv)
         break;
 
       default:
-        fprintf(stderr, "illegal option -- %c\n", c);
+        fprintf(stderr, "### Delete - \"-%c\" is not an option.", c);
         exit(1); 
       }
             

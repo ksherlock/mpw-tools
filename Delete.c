@@ -88,7 +88,19 @@ int prompt(const char *file) {
 	first = ch = getchar();
 	while (ch != '\n' && ch != EOF) ch = getchar();
 	if (first == 'y' || first == 'Y') return 1;
+	if (first == 'c' || first == 'C') return -1;
 	return 0;
+}
+
+int check(const char *name) {
+	int m = mode(name);
+	if (m != 2 || flags._y) return 1;
+
+	// directory.
+	if (flags._n) return 0;
+	if (flags._c) return -1;
+
+	return prompt(name);
 }
 
 static char error_message[255];
@@ -118,20 +130,16 @@ int main(int argc, char **argv) {
 
 	for (i = 1 ; i < argc; ++i) {
 		OSErr err;
-		int m;
+		int st;
 
 		char *file = argv[i];
 		char *p = c2p(file);
 		// todo -- y/n/c flags.
 
-		m = mode(p);
-		if (m == 2 && !flags._y) {
-			// directory...
-			if (flags._n) continue;
-			if (flags._c) { status = 4; break; }
-			
-			if (!prompt(file)) continue;
-		}
+		st = check(file);
+		if (st == 0) continue;
+		if (st == -1) { status = 4; break; }
+
 
 		err = FSDelete((unsigned char *)p, 0);
 		if (err && !flags._i) {
