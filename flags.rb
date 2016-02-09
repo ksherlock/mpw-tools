@@ -144,11 +144,13 @@ argf_each {|filename, file|
 	help = data['help']
 	options = data['options']
 	case_insensitive = data['case_insensitive'] || false
+	name = data['name'] || ''
 
 	# prevent warnings for unused vars.
 	options = options
 	help = help
 	case_insensitive = case_insensitive
+	name = name
 
 	# options is an array of items which may be hashes, strings, or numbers.
 	# normalize them.
@@ -189,7 +191,9 @@ argf_each {|filename, file|
 
 	b = binding # bind help, options for ERB.
 
+	#io = $stdout;
 	io = basename ? File.open(basename + ".c", "w") : $stdout
+	#io = File.open(basename + ".c", "w") unless basename.nil?
 	io.write(code.result(b))
 	
 	io.close unless io == $stdout
@@ -232,7 +236,7 @@ __END__
 #include <string.h>
 #include <stdlib.h>
 
-#include "<%= basename + '.h' %>"
+#include "<%= basename ? basename + '.h' : '' %>"
 
 void FlagsHelp(void)
 {
@@ -288,7 +292,7 @@ int FlagsParse(int argc, char **argv)
 % if help && !options.find_index {|x| x.char == 'h' } 
       case 'h':
         FlagsHelp();
-        break;
+        exit(0);
 % end            
 % #
 % options.each do |opt|
@@ -310,7 +314,7 @@ int FlagsParse(int argc, char **argv)
         {
           if (++i >= argc)
           {
-            fputs("option requires an argument -- <%= opt.char %>\n", stderr); 
+            fputs("### <%= name %> - \"-<%= opt.char %>\" requires an argument.\n", stderr); 
             exit(1);
           }
           optarg = argv[i];
@@ -329,7 +333,7 @@ int FlagsParse(int argc, char **argv)
 % end # options.each
 
       default:
-        fprintf(stderr, "illegal option -- %c\n", c);
+        fprintf(stderr, "### <%= name %> - \"-%c\" is not an option.", c);
         exit(1); 
       }
             

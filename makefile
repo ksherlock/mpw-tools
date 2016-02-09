@@ -28,12 +28,22 @@ LIBS = \
 
 # LDFLAGS = -d -c 'MPS ' -t MPST
 
-all: Help GetEnv Duplicate SetFile OverlayIIgs ListRez ListRezIIgs MakeEnums ReadGlobal Parameters Echo
+TARGETS = Help GetEnv Delete Duplicate SetFile OverlayIIgs ListRez ListRezIIgs\
+	MakeEnums ReadGlobal Parameters Echo
+
+all: $(TARGETS)
 
 clean:
 	rm -f *.o
-	rm -f Help GetEnv Duplicate SetFile OverlayIIgs MakeEnums ReadGlobal
+	rm -f  $(TARGETS)
 	rm -f libc/libc libc/*.o
+
+dist/Tools.tgz: $(TARGETS)
+	cp $^ dist/Tools/
+	rm -f $@
+	cd dist; tar cfz Tools.tgz Tools/
+	#zip -r  Tools.zip Tools
+
 
 libc/libc: libc/strcasecmp.c.o
 	$(MPW) Lib $(LIBFLAGS) -o $@ $^ 
