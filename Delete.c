@@ -56,26 +56,39 @@ char *c2p(const char *cp)
 // 0 - no file
 // 1 - regular file
 // 2 - directory.
-int mode(const char *path)
+int mode(const char *pname)
 {
-	char *pname;
+	//char *pname;
 	CInfoPBRec rec;
 	OSErr status;
 
 	memset(&rec, 0, sizeof(rec));
 
-	pname = c2p(path);
-	if (!pname) return -1;
+	//pname = c2p(path);
+	//if (!pname) return -1;
 
 	rec.hFileInfo.ioNamePtr = (unsigned char *)pname;
 	status = PBGetCatInfo(&rec, false);
-	free(pname);
+	//free(pname);
 
 	if (status) return 0;
 	if (rec.hFileInfo.ioFlAttrib & kioFlAttribDirMask)
 		return 2;
 
 	return 1;
+}
+
+int prompt(const char *file) {
+	char ch;
+	char first;
+
+	fprintf(stderr, "remove %s? ", file);
+	fflush(stderr);
+
+	first = ch = getchar();
+	while (ch != '\n' && ch != EOF) ch = getchar();
+	if (first == 'y' || first == 'Y') return 1;
+	return 0;
 }
 
 static char error_message[255];
@@ -86,20 +99,39 @@ int main(int argc, char **argv) {
 
 	argc = FlagsParse(argc, argv);
 
+	if (flags._c + flags._n + flags._y > 1) {
+		fprintf(stderr, "### Delete - Conflicting options were specified.\n");
+		FlagsHelp();
+		return 1;
+	}
+
 	if (argc == 1)
 	{
 		FlagsHelp();
 		return 1;
 	}
 
+
+
 	pascalStrings = false;
 	InitErrMgr(NULL, NULL, true);
 
 	for (i = 1 ; i < argc; ++i) {
 		OSErr err;
+		int m;
+
 		char *file = argv[i];
 		char *p = c2p(file);
 		// todo -- y/n/c flags.
+
+		m = mode(p);
+		if (m == 2 && !flags._y) {
+			// directory...
+			if (flags._n) continue;
+			if (flags._c) { status = 4; break; }
+			
+			if (!prompt(file)) continue;
+		}
 
 		err = FSDelete((unsigned char *)p, 0);
 		if (err && !flags._i) {
