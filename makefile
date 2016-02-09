@@ -44,6 +44,8 @@ dist/Tools.tgz: $(TARGETS)
 	cd dist; tar cfz Tools.tgz Tools/
 	#zip -r  Tools.zip Tools
 
+install: $(TARGETS)
+	cp $^ ~/mpw/Tools/
 
 libc/libc: libc/strcasecmp.c.o
 	$(MPW) Lib $(LIBFLAGS) -o $@ $^ 
