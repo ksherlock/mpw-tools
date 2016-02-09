@@ -49,6 +49,10 @@ Duplicate: Duplicate.c.o
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 
+Delete: Delete.c.o Delete-flags.c.o
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+
+
 SetFile: SetFile.c.o SetFile-flags.c.o
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
