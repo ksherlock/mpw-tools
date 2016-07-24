@@ -90,6 +90,16 @@ Parameters: Parameters.c.o
 Echo: Echo.c.o
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
+md5 : md5.c.o libtomcrypt/src/hashes/md5.c.o
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+
+md5.c.o : md5.c
+	$(MPW) SC -P -I . -I libtomcrypt/src/headers $< -o $@
+
+libtomcrypt/src/hashes/md5.c.o : libtomcrypt/src/hashes/md5.c
+	$(MPW) SC -P -I . -I libtomcrypt/src/headers -d LTC_MD5 $< -o $@
+
+
 #SetFile.c : SetFile.rl
 #	ragel -G2 -p -m -o $@ $<
 
