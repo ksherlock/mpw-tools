@@ -12,6 +12,10 @@ with a real MPW installation due to implementation differences.
 
 The tools are:
 
+* Delete: replacement for the Delete command.
+
+* Echo: replacement for the Echo command.
+
 * Duplicate: replacement for the Duplicate command.
 
 * GetEnv: new command to extract environment variables for use in makefiles.
@@ -20,12 +24,19 @@ The tools are:
 file in the `$MPW:Help:` directory rather than searching through a single 
 monolithic help file.
 
+* ListRez: List the resources in a Macintosh resource file.
+
+* ListRezIIgs: List the resources in a IIgs resource file.
+
+* MakeEnums: Print struct offsets for various records (for use with MPW development).
+
 * OverlayIIgs: replacement for the OverlayIIgs command. 
 (This has been tested under MPW.)
+
+* Parameters: replacement for the Parameters command.
+
+* ReadGlobal: Display a global value.
 
 * SetFile: replacement for the SetFile command.  Currently only filetype and
 creator type are supported.
 
-* ListRez: List the resources in a Macintosh resource file.
-
-* ListRezIIgs: List the resources in a IIgs resource file.

@@ -435,7 +435,7 @@ int getopt(char *opts, int argc, char **argv)
 					exit(0);
 					break;
 				default:
-					fprintf(stderr, "Duplicate - Invalid flag: \"%c\"\n", c);
+					fprintf(stderr, "ReadGlobal - Invalid flag: \"%c\"\n", c);
 					exit(1);
 					break;
 
