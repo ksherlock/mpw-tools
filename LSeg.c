@@ -138,7 +138,7 @@ int readSegRec(int fd)
          if ( *(cp++) == 0x3B && *(cp++) == 0x38 && *(cp++) == 0xE9 )
             /* This is the preamble we're looking for!    */
             /* Next two bytes are size of local variables */
-            return  *(int*)cp + base_size;
+            return  le16dec(cp) + base_size;
          else
             return -1;  /* Give up */
       }
@@ -247,7 +247,7 @@ void scanOMF(int fd, char *fname)
 OMFhead header;
 uint32_t off = 0l;
 int kind;
-int i;
+//int i;
 uint32_t eof;
 char *bname;
 
@@ -284,9 +284,9 @@ char *bname;
             name[0] = header.LABLEN;
             read(fd, name+1, header.LABLEN);
         }
-        printf("%s",bname);
-        i = strlen(bname);
-        while (i++ < 20) putchar(' ');
+        printf("%-20s",bname);
+        //i = strlen(bname);
+        //while (i++ < 20) putchar(' ');
 
         kind = header.KIND & 0x1F;
         switch (kind)   {
