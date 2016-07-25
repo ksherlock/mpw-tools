@@ -110,6 +110,11 @@ typedef unsigned long ulong32;
 #define LTC_ARGCHKVD(x) LTC_ARGCHK(x)
 
 
+#define LTC_MD2
+#define LTC_MD4
+#define LTC_MD5
+#define LTC_SHA1
+
 //#include <tomcrypt_cfg.h>
 //#include <tomcrypt_macros.h>
 //#include <tomcrypt_cipher.h>

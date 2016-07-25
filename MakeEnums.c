@@ -5,7 +5,7 @@
 #include <ctype.h>
 #include <Processes.h>
 
-#include "libc/libc.h"
+#include <libc.h>
 
 #define msizeof(type, member) sizeof( ((type *)0)->member)
 

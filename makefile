@@ -14,7 +14,7 @@ LDFLAGS = -w -c 'MPS ' -t MPST \
 	-sn STDIO=Main -sn INTENV=Main -sn %A5Init=Main
 
 LIBFLAGS = -P
-SCFLAGS = -P -I libc/ -I ./
+SCFLAGS = -P -I include/
 
 # MPW 3.5
 
@@ -36,7 +36,10 @@ all: $(TARGETS)
 clean:
 	rm -f *.o
 	rm -f  $(TARGETS)
-	rm -f libc/libc libc/*.o
+	rm -f lib/libc libc/*.o
+	rm -f lib/*
+	rm -f libtomcrypt/src/hashes/*.o
+
 
 dist/Tools.tgz: $(TARGETS)
 	cp $^ dist/Tools/
@@ -47,7 +50,10 @@ dist/Tools.tgz: $(TARGETS)
 install: $(TARGETS)
 	cp $^ ~/mpw/Tools/
 
-libc/libc: libc/strcasecmp.c.o libc/_getprogname.c.o libc/err.c.o libc/getopt.c.o libc/basename.c.o
+lib:
+	mkdir lib
+
+lib/libc: libc/strcasecmp.c.o libc/_getprogname.c.o libc/err.c.o libc/getopt.c.o libc/basename.c.o | lib
 	$(MPW) Lib $(LIBFLAGS) -o $@ $^ 
 
 GetEnv: GetEnv.c.o
@@ -78,14 +84,14 @@ ListRez: ListRez.c.o
 ListRezIIgs: ListRezIIgs.c.o
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
-LSeg: LSeg.c.o libc/libc
+LSeg: LSeg.c.o lib/libc
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 
-MakeEnums: MakeEnums.c.o libc/libc
+MakeEnums: MakeEnums.c.o lib/libc
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
-ReadGlobal: ReadGlobal.c.o libc/libc
+ReadGlobal: ReadGlobal.c.o lib/libc
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 Parameters: Parameters.c.o
@@ -94,15 +100,20 @@ Parameters: Parameters.c.o
 Echo: Echo.c.o
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
-md5 : md5.c.o libtomcrypt/src/hashes/md5.c.o
+
+md5 : md5.c.o lib/libtomcrypt
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 md5.c.o : md5.c
-	$(MPW) SC -P -I . -I libtomcrypt/src/headers $< -o $@
+	$(MPW) SC $(SCFLAGS) -I libtomcrypt/src/headers $< -o $@
 
-libtomcrypt/src/hashes/md5.c.o : libtomcrypt/src/hashes/md5.c
-	$(MPW) SC -P -I . -I libtomcrypt/src/headers -d LTC_MD5 $< -o $@
+LTC_H = libtomcrypt/src/hashes/
+lib/libtomcrypt : $(LTC_H)/md2.c.o $(LTC_H)/md4.c.o $(LTC_H)/md5.c.o $(LTC_H)/sha1.c.o | lib
+	$(MPW) Lib $(LIBFLAGS) -o $@ $^ 
 
+
+$(LTC_H)%.c.o : $(LTC_H)%.c
+	$(MPW) SC $(SCFLAGS) -I libtomcrypt/src/headers/  $< -o $@
 
 #SetFile.c : SetFile.rl
 #	ragel -G2 -p -m -o $@ $<

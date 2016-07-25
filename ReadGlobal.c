@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "libc/libc.h"
+#include <libc.h>
 
 unsigned long GlobalAddress(const char *name, int *numeric)
 {

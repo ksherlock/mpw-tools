@@ -2,8 +2,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#define LTC_MD5
-#include "tomcrypt.h"
+#include <tomcrypt.h>
 
 
 const char *unhash(const unsigned char *hash) {
