@@ -29,7 +29,7 @@ LIBS = \
 # LDFLAGS = -d -c 'MPS ' -t MPST
 
 TARGETS = Help GetEnv Delete Duplicate SetFile OverlayIIgs ListRez ListRezIIgs\
-	MakeEnums ReadGlobal Parameters Echo md5
+	LSeg MakeEnums ReadGlobal Parameters Echo md5
 
 all: $(TARGETS)
 
@@ -77,6 +77,10 @@ ListRez: ListRez.c.o
 
 ListRezIIgs: ListRezIIgs.c.o
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+
+LSeg: LSeg.c.o libc/libc
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+
 
 MakeEnums: MakeEnums.c.o libc/libc
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
