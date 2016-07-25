@@ -1,7 +1,7 @@
 #ifndef __IIGS_RESOURCE__
 #define __IIGS_RESOURCE__
 
-#include "stdint.h"
+#include <stdint.h>
 
 #define IIgsResChanged 0x0020
 #define IIgsResPreLoad 0x0040

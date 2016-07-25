@@ -7,7 +7,7 @@
 #ifndef __MAC_RESOURCE__
 #define __MAC_RESOURCE__
 
-#include "stdint.h"
+#include <stdint.h>
 
 #define macresPreLoad	0x04
 #define macresProtected	0x08

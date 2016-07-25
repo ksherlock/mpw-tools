@@ -32,7 +32,7 @@
 #include <errno.h>
 #include <Endian.h>
 
-#include "stdint.h"
+#include <stdint.h>
 #include "IIgsResource.h"
 
 // n.b. - all data is little endian.

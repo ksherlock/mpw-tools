@@ -14,7 +14,7 @@ LDFLAGS = -w -c 'MPS ' -t MPST \
 	-sn STDIO=Main -sn INTENV=Main -sn %A5Init=Main
 
 LIBFLAGS = -P
-SCFLAGS = -P
+SCFLAGS = -P -I libc/ -I ./
 
 # MPW 3.5
 
@@ -47,7 +47,7 @@ dist/Tools.tgz: $(TARGETS)
 install: $(TARGETS)
 	cp $^ ~/mpw/Tools/
 
-libc/libc: libc/strcasecmp.c.o
+libc/libc: libc/strcasecmp.c.o libc/_getprogname.c.o libc/err.c.o libc/getopt.c.o libc/basename.c.o
 	$(MPW) Lib $(LIBFLAGS) -o $@ $^ 
 
 GetEnv: GetEnv.c.o

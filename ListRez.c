@@ -31,7 +31,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include "stdint.h"
+#include <stdint.h>
 #include "MacResource.h"
 
 // n.b. - all data is big endian.
