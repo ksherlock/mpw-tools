@@ -30,11 +30,19 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>
+#include <sysexits.h>
 
 #include <stdint.h>
+#include <tomcrypt.h>
+
 #include "MacResource.h"
 
+
+
 // n.b. - all data is big endian.
+
+int mflag = 0;
 
 void hexdump(const uint8_t *data, ssize_t size)
 {
@@ -81,6 +89,50 @@ const char *HexMap = "0123456789abcdef";
     }
 
     printf("\n");
+}
+
+const char *unhash(const unsigned char *hash) {
+	static char buffer[33];
+	static char table[] = "0123456789abcdef";
+
+	unsigned i, j;
+
+	for (i = 0, j = 0; i < 16; ++i) {
+		unsigned char c = hash[i];
+		buffer[j++] = table[c >> 4];
+		buffer[j++] = table[c & 0x0f];
+	}
+	buffer[j] = 0;
+	return buffer;
+}
+
+const char *md5(int fd, uint32_t length) {
+	hash_state md;
+	static uint8_t buffer[4096];
+	uint8_t hash[16];
+
+
+	md5_init(&md);
+
+	while (length) {
+		long l;
+		uint32_t count = sizeof(buffer);
+		if (count > length) count = length;
+		l = read(fd, buffer, count);
+
+		if (l < 0) {
+			if (errno == EINTR) continue;
+			return NULL;
+		}
+		if (l == 0) break;
+
+		md5_process(&md, buffer, l);
+
+		length -= l;
+	}
+	if (length) return NULL;
+	md5_done(&md, hash);
+	return unhash(hash);
 }
 
 const char *TypeCode(uint8_t code[4])
@@ -185,10 +237,15 @@ int onefile(const char *file)
 	typeListPtr = mapdata + map.offset_typelist + 2;
 	namePtr = mapdata + map.offset_namelist;
 
-	printf("Type       ID    Size    Attr  Name\n");
-	printf("-----      ----- ------- ----- ----\n");
-	//      'CODE'     $0004 $000018 $0020 SANELIB
-
+	if (mflag) {
+		printf("Type       ID    Size    Attr  Name             MD5\n");
+		printf("-----      ----- ------- ----- ----             ---\n");
+	}
+	else {
+		printf("Type       ID    Size    Attr  Name\n");
+		printf("-----      ----- ------- ----- ----\n");
+		//      'CODE'     $0004 $000018 $0020 SANELIB
+	}
 	// map.count is $ffff for an empty file.
 	count = (map.count + 1) & 0xffff;
 	for (i = 0; i < count; ++i, typeListPtr += sizeof(MacResourceTypeList))
@@ -257,13 +314,35 @@ int onefile(const char *file)
 				return -1;		
 			}
 
-			printf("%-10s $%04x $%06x $%04x %s\n", 
-				tc, 
-				ref.ResourceID,
-				rSize,
-				ref.attr,
-				name
-			);
+
+			if (mflag) {
+
+				const char * hash = md5(fd, rSize);
+				if (!hash) {
+					fprintf(stderr, "# %s: Not a macintosh resource fork.\n", file);
+					close(fd);
+					free(mapdata);
+					return -1;	
+				}
+
+				printf("%-10s $%04x $%06x $%04x %-16s %s\n", 
+					tc, 
+					ref.ResourceID,
+					rSize,
+					ref.attr,
+					name,
+					hash
+				);
+			}
+			else {
+				printf("%-10s $%04x $%06x $%04x %s\n", 
+					tc, 
+					ref.ResourceID,
+					rSize,
+					ref.attr,
+					name
+				);
+			}
 		}
 
 
@@ -275,22 +354,40 @@ int onefile(const char *file)
 
 void help(int status)
 {
-
-	printf("# ListRez\n");
-	printf("# Usage: ListRez [options] file");
-	printf("#\n");
+	printf("# Usage: ListRez [-mh] file\n");
 
 	exit(status);
 }
 
 int main(int argc, char **argv)
 {
+	int c;
+
+	while((c = getopt(argc, argv, "hm")) != -1) {
+		switch(c) {
+			default:
+			case ':':
+			case '?':
+				help(EX_USAGE);
+				break;
+			case 'h':
+				help(0);
+				break;
+			case 'm':
+				mflag = 1;
+				break;
+		}
+
+	}
+
+	argc -= optind;
+	argv += optind;
 
 	// options for resID, resType, list only
-	if (argc != 2)
-		help(1);
+	if (argc != 1)
+		help(EX_USAGE);
 
-	onefile(argv[1]);
+	onefile(*argv);
 
 	return 0;
 }
