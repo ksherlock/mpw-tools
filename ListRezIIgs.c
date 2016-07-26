@@ -32,10 +32,18 @@
 #include <errno.h>
 #include <Endian.h>
 
+#include <err.h>
+#include <sysexits.h>
+#include <unistd.h>
+
+#include <tomcrypt.h>
+
 #include <stdint.h>
 #include "IIgsResource.h"
 
 // n.b. - all data is little endian.
+
+int mflag = 0;
 
 void hexdump(const uint8_t *data, ssize_t size)
 {
@@ -82,6 +90,52 @@ const char *HexMap = "0123456789abcdef";
     }
 
     printf("\n");
+}
+
+const char *unhash(const unsigned char *hash) {
+	static char buffer[33];
+	static char table[] = "0123456789abcdef";
+
+	unsigned i, j;
+
+	for (i = 0, j = 0; i < 16; ++i) {
+		unsigned char c = hash[i];
+		buffer[j++] = table[c >> 4];
+		buffer[j++] = table[c & 0x0f];
+	}
+	buffer[j] = 0;
+	return buffer;
+}
+
+const char *md5(int fd, uint32_t length, const char *file) {
+	hash_state md;
+	static uint8_t buffer[4096];
+	uint8_t hash[16];
+
+
+	md5_init(&md);
+
+	while (length) {
+		long l;
+		uint32_t count = sizeof(buffer);
+		if (count > length) count = length;
+		l = read(fd, buffer, count);
+
+		if (l < 0) {
+			if (errno == EINTR) continue;
+			err(EX_IOERR, "Error reading file: %s", file);
+		}
+		if (l == 0) break;
+
+		md5_process(&md, buffer, l);
+
+		length -= l;
+	}
+	if (length) {
+		errx(EX_DATAERR, "Not a IIgs resource fork: %s", file);
+	}
+	md5_done(&md, hash);
+	return unhash(hash);
 }
 
 
@@ -157,23 +211,21 @@ int onefile(const char *file)
 	fd = open(file, O_RDONLY | O_BINARY | O_RSRC);
 	if (fd < 0)
 	{
-		fprintf(stderr, "# %s: Error opening file: %s\n", file, strerror(errno));
-		return -1;
+		err(EX_NOINPUT, "Errror opening file: %s", file);
 	}
 
 	size = read(fd, &header, sizeof(header));
 	if (size < 0)
 	{
-		fprintf(stderr, "# %s Error reading file: %s\n", file, strerror(errno));
+		int e = errno;
 		close(fd);
-		return -1;
+		errc(EX_IOERR, e, "Error reading file: %s", file);
 	}
 
 	if (size < sizeof(header))
 	{
-		fprintf(stderr, "# %s: Not a IIgs resource fork.\n", file);
 		close(fd);
-		return -1;
+		errx(EX_DATAERR, "Not a IIgs resource fork: %s", file);
 	}
 
 	header.rFileVersion = EndianU32_LtoN(header.rFileVersion);
@@ -182,44 +234,40 @@ int onefile(const char *file)
 
 	if (header.rFileVersion != 0x00000000)
 	{
-		fprintf(stderr, "# %s: Not a IIgs resource fork.\n", file);
 		close(fd);
-		return -1;
+		errx(EX_DATAERR, "Not a IIgs resource fork: %s", file);
 	}
 
 
 	mapdata = malloc(header.rFileMapSize);
 	if (!mapdata)
 	{
-		fprintf(stderr, "# %s Memory allocation failure: %s\n", file, strerror(errno));
 		close(fd);
-		return -1;			
+		errx(EX_OSERR, NULL);
 	}
 
 
 	off = lseek(fd, header.rFileToMap, SEEK_SET);
 	if (off < 0)
 	{
-		fprintf(stderr, "# %s: Not a IIgs resource fork.\n", file);
 		close(fd);
 		free(mapdata);
-		return -1;	
+		errx(EX_DATAERR, "Not a IIgs resource fork: %s", file);
 	}
 
 	size = read(fd, mapdata, header.rFileMapSize);
 	if (size < 0)
 	{
-		fprintf(stderr, "# %s Error reading file: %s\n", file, strerror(errno));
+		int e = errno;
 		close(fd);
 		free(mapdata);
-		return -1;		
+		errc(EX_IOERR, e, "Error reading file: %s", file);
 	}
 	if (size != header.rFileMapSize)
 	{
-		fprintf(stderr, "# %s: Not a IIgs resource fork.\n", file);
 		close(fd);
 		free(mapdata);
-		return -1;		
+		errx(EX_DATAERR, "Not a IIgs resource fork: %s", file);
 	}
 
 	memcpy(&map, mapdata, sizeof(map));
@@ -239,9 +287,14 @@ int onefile(const char *file)
 	indexPtr = mapdata + map.mapToIndex;
 
 
-	printf("Type                       ID        Size    Attr\n");
-	printf("-----                      --------- ------- -----\n");
-	//      $8001 rIcon                $00000001 $0001c0 $0040
+	if (mflag) {
+		printf("Type                       ID        Size    Attr  MD5\n");
+		printf("-----                      --------- ------- ----- ---\n");
+	} else {
+		printf("Type                       ID        Size    Attr\n");
+		printf("-----                      --------- ------- -----\n");
+		//      $8001 rIcon                $00000001 $0001c0 $0040
+	}
 	for(;; indexPtr += sizeof(IIgsResRefRec))
 	{
 		IIgsResRefRec ref;
@@ -259,13 +312,30 @@ int onefile(const char *file)
 
 
 		name = ResTypeName(ref.resType);
-		printf("$%04x %-20s $%08x $%06x $%04x\n",
-			ref.resType,
-			name ? name : "",
-			ref.resID,
-			ref.resSize,
-			ref.resAttr
-		);
+
+		if (mflag) {
+			const char *hash;
+			lseek(fd, ref.resOffset, SEEK_SET);
+			hash = md5(fd, ref.resSize, file);
+
+			printf("$%04x %-20s $%08x $%06x $%04x %s\n",
+				ref.resType,
+				name ? name : "",
+				ref.resID,
+				ref.resSize,
+				ref.resAttr,
+				hash
+			);
+
+		} else {
+			printf("$%04x %-20s $%08x $%06x $%04x\n",
+				ref.resType,
+				name ? name : "",
+				ref.resID,
+				ref.resSize,
+				ref.resAttr
+			);
+		}
 
 	}
 
@@ -275,22 +345,39 @@ int onefile(const char *file)
 
 void help(int status)
 {
-
-	printf("# ListRezIIgs\n");
-	printf("# Usage: ListRezIIgs [options] file");
-	printf("#\n");
+	printf("# Usage: ListRezIIgs [-h] [-m] file");
 
 	exit(status);
 }
 
 int main(int argc, char **argv)
 {
+	int c;
 
-	// options for resID, resType, list only
-	if (argc != 2)
-		help(1);
+	while ((c = getopt(argc, argv, "hm")) != -1) {
+		switch(c){
+			default:
+			case ':':
+			case '?':
+				help(EX_USAGE);
+				break;
+			case 'h':
+				help(0);
+				break;
+			case 'm':
+				mflag = 1;
+				break;
+		}
+	}
 
-	onefile(argv[1]);
+	argc -= optind;
+	argv += optind;
+
+	// options for resID, resType, list only?
+	if (argc != 1)
+		help(EX_USAGE);
+
+	onefile(*argv);
 
 	return 0;
 }
