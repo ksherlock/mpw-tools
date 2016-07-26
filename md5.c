@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>
+#include <sysexits.h>
 
 #include <tomcrypt.h>
 
@@ -103,7 +105,7 @@ int test() {
 }
 
 void help() {
-	fputs("Usage: MD5 [-x] files...\n", stdout);
+	fputs("Usage: MD5 [-h -x] files...\n", stdout);
 }
 
 int main(int argc, char **argv) {
@@ -111,31 +113,33 @@ int main(int argc, char **argv) {
 
 	int rv;
 	int i;
+	int c;
 
-	for (i = 1; i < argc; ++i) {
-		char *cp = argv[i];
-		if (*cp != '-') {
-			break;
+	while ( (c = getopt(argc, argv, "hx")) != -1) {
+
+		switch(c) {
+			case 'h':
+				help();
+				exit(EX_OK);
+				break;
+			case 'x':
+				exit(test());
+				break;
+			case '?':
+			case ':':
+			default:
+				help();
+				exit(EX_USAGE);
 		}
-		if (strcmp(cp, "--")) {
-			++i;
-			break;
-		}
-		if (!strcmp(cp, "-h")) {
-			help();
-			exit(0);
-		}
-		if (!strcmp(cp, "-x")) {
-			return test();
-		}
+
 	}
 
-	argv += i;
-	argc -= i;
+	argv += optind;
+	argc -= optind;
 
 	if (argc == 0) {
 		help();
-		return 1;
+		exit(EX_USAGE);
 	}
 
 	rv = 0;
