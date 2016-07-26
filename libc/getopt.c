@@ -87,7 +87,7 @@ getopt(int nargc, char * const nargv[], const char *ostr)
 			++optind;
 		if (opterr && *ostr != ':')
 			(void)fprintf(stderr,
-			    "%s: illegal option -- %c\n", _getprogname(),
+			    "### %s: illegal option -- %c\n", _getprogname(),
 			    optopt);
 		return (BADCH);
 	}
@@ -118,7 +118,7 @@ getopt(int nargc, char * const nargv[], const char *ostr)
 				return (BADARG);
 			if (opterr)
 				(void)fprintf(stderr,
-				    "%s: option requires an argument -- %c\n",
+				    "### %s: option requires an argument -- %c\n",
 				    _getprogname(), optopt);
 			return (BADCH);
 		}
