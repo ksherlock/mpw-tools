@@ -329,7 +329,7 @@ char *bname;
 
 void usage(void)
 {
-    fprintf(stderr,"usage: lseg [-d] filename...\n");
+    fprintf(stderr,"usage: LSegIIgs [-d] filename...\n");
     exit(1);
 }
 
