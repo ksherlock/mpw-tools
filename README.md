@@ -28,6 +28,8 @@ monolithic help file.
 
 * ListRezIIgs: List the resources in a IIgs resource file.
 
+* LSegIIgs: List segments in a IIgs OMF File (borrowed from gno/me). 
+
 * MakeEnums: Print struct offsets for various records (for use with MPW development).
 
 * md5: Print md5 checksum for a file (data and resource fork).
