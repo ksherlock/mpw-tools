@@ -31,8 +31,9 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
-#include <sysexits.h>
 
+#include <err.h>
+#include <sysexits.h>
 #include <stdint.h>
 #include <tomcrypt.h>
 
@@ -106,7 +107,7 @@ const char *unhash(const unsigned char *hash) {
 	return buffer;
 }
 
-const char *md5(int fd, uint32_t length) {
+const char *md5(int fd, uint32_t length, const char *file) {
 	hash_state md;
 	static uint8_t buffer[4096];
 	uint8_t hash[16];
@@ -122,7 +123,7 @@ const char *md5(int fd, uint32_t length) {
 
 		if (l < 0) {
 			if (errno == EINTR) continue;
-			return NULL;
+			err(EX_IOERR, "Error reading file: %s", file);
 		}
 		if (l == 0) break;
 
@@ -130,10 +131,13 @@ const char *md5(int fd, uint32_t length) {
 
 		length -= l;
 	}
-	if (length) return NULL;
+	if (length) {
+		errx(EX_DATAERR, "Not a Macintosh resource fork: %s", file);
+	}
 	md5_done(&md, hash);
 	return unhash(hash);
 }
+
 
 const char *TypeCode(uint8_t code[4])
 {
@@ -172,64 +176,60 @@ int onefile(const char *file)
 	fd = open(file, O_RDONLY | O_BINARY | O_RSRC);
 	if (fd < 0)
 	{
-		fprintf(stderr, "# %s: Error opening file: %s\n", file, strerror(errno));
-		return -1;
+		err(EX_NOINPUT, "Errror opening file: %s", file);
 	}
 
 	size = read(fd, &header, sizeof(header));
 	if (size < 0)
 	{
-		fprintf(stderr, "# %s Error reading file: %s\n", file, strerror(errno));
+		int e = errno;
 		close(fd);
-		return -1;
+		errc(EX_IOERR, e, "Error reading file: %s", file);
 	}
 
 	if (size < sizeof(header))
 	{
-		fprintf(stderr, "# %s: Not a macintosh resource fork.\n", file);
 		close(fd);
-		return -1;
+		errx(EX_DATAERR, "Not a Macintosh resource fork: %s", file);
 	}
 
 	// a couple sanity checks
 	if (header.length_rmap == 0 || header.offset_rmap < sizeof(header))
 	{
-		fprintf(stderr, "# %s: Not a macintosh resource fork.\n", file);
 		close(fd);
+		errx(EX_DATAERR, "Not a Macintosh resource fork: %s", file);
 	}
 
 	mapdata = malloc(header.length_rmap);
 	if (!mapdata)
 	{
-		fprintf(stderr, "# %s Memory allocation failure: %s\n", file, strerror(errno));
 		close(fd);
-		return -1;			
+		errx(EX_OSERR, NULL);		
 	}
 
 
 	off = lseek(fd, header.offset_rmap, SEEK_SET);
 	if (off < 0)
 	{
-		fprintf(stderr, "# %s: Not a macintosh resource fork.\n", file);
 		close(fd);
 		free(mapdata);
-		return -1;	
+		errx(EX_DATAERR, "Not a Macintosh resource fork: %s", file);
 	}
 
 	size = read(fd, mapdata, header.length_rmap);
 	if (size < 0)
 	{
-		fprintf(stderr, "# %s Error reading file: %s\n", file, strerror(errno));
+		int e = errno;
 		close(fd);
 		free(mapdata);
-		return -1;		
+		errc(EX_IOERR, e, "Error reading file: %s", file);
+	
 	}
 	if (size != header.length_rmap)
 	{
-		fprintf(stderr, "# %s: Not a macintosh resource fork.\n", file);
 		close(fd);
 		free(mapdata);
-		return -1;		
+		errx(EX_DATAERR, "Not a Macintosh resource fork: %s", file);	
 	}
 
 	memcpy(&map, mapdata, sizeof(map));
@@ -292,10 +292,9 @@ int onefile(const char *file)
 			off = lseek(fd, header.offset_rdata + rOff, SEEK_SET);
 			if (off < 0)
 			{
-				fprintf(stderr, "# %s: Not a macintosh resource fork.\n", file);
 				close(fd);
 				free(mapdata);
-				return -1;
+				errx(EX_DATAERR, "Not a Macintosh resource fork: %s", file);
 			}
 
 			size = read(fd, &rSize, sizeof(rSize));
@@ -317,13 +316,7 @@ int onefile(const char *file)
 
 			if (mflag) {
 
-				const char * hash = md5(fd, rSize);
-				if (!hash) {
-					fprintf(stderr, "# %s: Not a macintosh resource fork.\n", file);
-					close(fd);
-					free(mapdata);
-					return -1;	
-				}
+				const char * hash = md5(fd, rSize, file);
 
 				printf("%-10s $%04x $%06x $%04x %-16s %s\n", 
 					tc, 
@@ -354,7 +347,7 @@ int onefile(const char *file)
 
 void help(int status)
 {
-	printf("# Usage: ListRez [-mh] file\n");
+	printf("# Usage: ListRez [-h] [-m] file\n");
 
 	exit(status);
 }
@@ -383,7 +376,7 @@ int main(int argc, char **argv)
 	argc -= optind;
 	argv += optind;
 
-	// options for resID, resType, list only
+	// options for resID, resType, list only?
 	if (argc != 1)
 		help(EX_USAGE);
 
