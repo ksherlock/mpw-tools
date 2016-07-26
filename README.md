@@ -30,6 +30,8 @@ monolithic help file.
 
 * MakeEnums: Print struct offsets for various records (for use with MPW development).
 
+* md5: Print md5 checksum for a file (data and resource fork).
+
 * OverlayIIgs: replacement for the OverlayIIgs command. 
 (This has been tested under MPW.)
 

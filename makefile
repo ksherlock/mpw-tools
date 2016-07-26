@@ -33,7 +33,7 @@ LIBS = \
 # LDFLAGS = -d -c 'MPS ' -t MPST
 
 TARGETS = Help GetEnv Delete Duplicate SetFile OverlayIIgs ListRez ListRezIIgs\
-	LSeg MakeEnums ReadGlobal Parameters Echo md5
+	LSegIIgs MakeEnums ReadGlobal Parameters Echo md5
 
 all: $(TARGETS)
 
@@ -60,15 +60,6 @@ lib:
 lib/libc: libc/strcasecmp.c.o libc/_getprogname.c.o libc/err.c.o libc/getopt.c.o libc/basename.c.o | lib
 	$(MPW) Lib $(LIBFLAGS) -o $@ $^ 
 
-# GetEnv: GetEnv.c.o
-# 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
-
-# Help: Help.c.o
-# 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
-
-
-# Duplicate: Duplicate.c.o
-# 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 
 Delete: Delete.c.o Delete-flags.c.o $(LIBRARIES)
@@ -82,32 +73,6 @@ SetFile: SetFile.c.o SetFile-flags.c.o $(LIBRARIES)
 OverlayIIgs: OverlayIIgs.c.o OverlayIIgs-flags.c.o $(LIBRARIES)
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
-# ListRez: ListRez.c.o lib/libtomcrypt
-# 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
-
-# ListRezIIgs: ListRezIIgs.c.o
-# 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
-
-# LSeg: LSeg.c.o lib/libc
-# 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
-
-
-# MakeEnums: MakeEnums.c.o 
-# 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
-
-# ReadGlobal: ReadGlobal.c.o 
-# 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
-
-# Parameters: Parameters.c.o
-# 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
-
-# Echo: Echo.c.o
-# 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
-
-
-#md5 : md5.c.o lib/libtomcrypt
-#	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
-
 
 
 LTC_H = libtomcrypt/src/hashes/
@@ -117,12 +82,6 @@ lib/libtomcrypt : $(LTC_H)/md2.c.o $(LTC_H)/md4.c.o $(LTC_H)/md5.c.o $(LTC_H)/sh
 
 $(LTC_H)%.c.o : $(LTC_H)%.c
 	$(MPW) SC $(SCFLAGS)  $< -o $@
-
-#SetFile.c : SetFile.rl
-#	ragel -G2 -p -m -o $@ $<
-
-#ReadGlobal.c : ReadGlobal.rc
-#	re2c -o $@ $<
 
 
 %.c.o : %.c
