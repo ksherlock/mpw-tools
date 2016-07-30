@@ -268,7 +268,7 @@ int exclude(CInfoPBRec *pb) {
 	return 0;
 } 
 
-void dir(int dirID) {
+void one_dir(int dirID) {
 	unsigned char buffer[256+1];
 	OSErr err;
 	CInfoPBRec pb;
@@ -306,6 +306,7 @@ void one_file(const char *name) {
 
 	CInfoPBRec pb;
 	OSErr err;
+	int dir;
 
 	char *pstr = c2p(name);
 
@@ -321,6 +322,15 @@ void one_file(const char *name) {
 	}
 
 	if (exclude(&pb)) return;
+
+	dir = pb.hFileInfo.ioFlAttrib & (1<<4) ? 1 : 0;
+
+	if (dir && !_i) {
+		if (!_o) printf(":%s:\n", name); // print directory name.
+		one_dir(pb.dirInfo.ioDrDirID);
+		fputc('\n', stdout);
+		return;
+	}
 
 	// todo -- if directory, etc.
 	if (_x) {
@@ -532,7 +542,7 @@ int main(int argc, char **argv) {
 	if (_x && !_n) header(_x);
 
 
-	if (argc == 0) dir(0);
+	if (argc == 0) one_dir(0);
 
 	for (i = 0; i < argc; ++i) {
 		one_file(argv[i]);
