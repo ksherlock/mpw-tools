@@ -29,6 +29,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <sysexits.h>
+#include <tomcrypt.h>
 
 /* [v1.1] Use library routine rather than macro, so that program  */
 /*        code is less complicated and can be optimized by ORCA/C */
@@ -78,10 +80,59 @@ char *segTypes[] = {   /* [v1.1] Omit "unknown" for undefined segment types */
 "Direct-page/Stack "};
 
 
+const char *unhash(const unsigned char *hash) {
+    static char buffer[33];
+    static char table[] = "0123456789abcdef";
+
+    unsigned i, j;
+
+    for (i = 0, j = 0; i < 16; ++i) {
+        unsigned char c = hash[i];
+        buffer[j++] = table[c >> 4];
+        buffer[j++] = table[c & 0x0f];
+    }
+    buffer[j] = 0;
+    return buffer;
+}
+
+const char *md5(int fd, uint32_t length) {
+    hash_state md;
+    static uint8_t buffer[4096];
+    uint8_t hash[16];
+
+
+    md5_init(&md);
+
+    while (length) {
+        long l;
+        uint32_t count = sizeof(buffer);
+        if (count > length) count = length;
+        l = read(fd, buffer, count);
+
+        if (l < 0) {
+            if (errno == EINTR) continue;
+            err(EX_IOERR, "Error reading file");
+        }
+        if (l == 0) break;
+
+        md5_process(&md, buffer, l);
+
+        length -= l;
+    }
+    if (length) {
+        errx(EX_DATAERR, "Unexpected EOF");
+    }
+    md5_done(&md, hash);
+    return unhash(hash);
+}
+
+
+
 /* --- Start of new code [v1.1] --- */
 
 /* Option for decimal rather than hex output */
 int decimal_output=false;
+int mflag = false;
 
 /* Snippit of code to be analyzed for allocated stack size */
 static char code[8];
@@ -315,7 +366,20 @@ char *bname;
             default:
                 printf(" unknown (0x%02X)     ", kind);
             }
+
+        if (mflag) {
+            off_t size;
+            size = header.BYTECNT;
+            if (header.VERSION == 1) size *= 512;
+            size -= header.DISPDATA;
+
+            lseek(fd, off+header.DISPDATA, SEEK_SET);
+            fputs(md5(fd, size), stdout);
+            putchar(' ');
+        }
+
         prntAscii(name+1,name[0]);
+
         putchar('\n');
         /* In OMF version 1, the first field is a block count */
         if (header.VERSION == 1)
@@ -329,7 +393,7 @@ char *bname;
 
 void usage(void)
 {
-    fprintf(stderr,"usage: LSegIIgs [-d] filename...\n");
+    fprintf(stderr,"### Usage: LSegIIgs [-d] [-m] filename...\n");
     exit(1);
 }
 
@@ -358,10 +422,13 @@ int ch;
 #endif
 
     /* Get option, if present */
-    while ((ch = getopt(argc, argv, "d")) != EOF) {
+    while ((ch = getopt(argc, argv, "dm")) != EOF) {
         switch(ch) {
             case 'd':
                 decimal_output = true;
+                break;
+            case 'm':
+                mflag = true;
                 break;
             default:
                 usage();
@@ -374,10 +441,48 @@ int ch;
     if (argc < 1) usage();
 
     /* Print header [v1.1] */
-printf(
-"File                 Type               Size     Stack  Name\n");
-printf(
-"-------------------- ------------------ -------- ------ ----------------\n");
+
+
+    if (mflag) {
+
+        fputs(
+            "File                 "
+            "Type               "
+            "Size     "
+            "Stack  "
+            "MD5                              "
+            "Name\n", 
+            stdout);
+
+        fputs(
+            "-------------------- "
+            "------------------ "
+            "-------- "
+            "------ "
+            "-------------------------------- "
+            "----------------\n",
+            stdout
+        );
+
+    } else {
+        fputs(
+            "File                 "
+            "Type               "
+            "Size     "
+            "Stack  "
+            "Name\n", 
+            stdout);
+
+        fputs(
+            "-------------------- "
+            "------------------ "
+            "-------- "
+            "------ "
+            "----------------\n",
+            stdout
+        );
+
+    }
     
     while (argc-- > 0) {
 	if ((fd = open(*argv, O_RDONLY)) < 0) {
