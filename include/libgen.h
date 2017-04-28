@@ -31,8 +31,8 @@
 #ifndef _LIBGEN_H_
 #define	_LIBGEN_H_
 
-char	*basename(const char *);
+char	*basename(char *);
 char	*basename_r(const char *, char *);
-char	*dirname(const char *);
+char	*dirname(char *);
 
 #endif /* !_LIBGEN_H_ */
