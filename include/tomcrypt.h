@@ -90,6 +90,7 @@ typedef unsigned long ulong32;
 
 
 #define XMEMCPY  memcpy
+#define XMEMSET  memset
 
 #ifndef MAX
    #define MAX(x, y) ( ((x)>(y))?(x):(y) )
@@ -110,10 +111,28 @@ typedef unsigned long ulong32;
 #define LTC_ARGCHKVD(x) LTC_ARGCHK(x)
 
 
+#if 0
+/* 64-bit constants */
+#define LTC_BLAKE2B
+#define LTC_SHA3
+#define LTC_TIGER
+#define LTC_SHA512
+#define LTC_WHIRLPOOL
+
+#define LTC_CHC_HASH
+
+#endif
+
+#define LTC_BLAKE2S
 #define LTC_MD2
 #define LTC_MD4
 #define LTC_MD5
+#define LTC_RIPEMD128
+#define LTC_RIPEMD160
+#define LTC_RIPEMD256
+#define LTC_RIPEMD320
 #define LTC_SHA1
+#define LTC_SHA256
 
 //#include <tomcrypt_cfg.h>
 //#include <tomcrypt_macros.h>

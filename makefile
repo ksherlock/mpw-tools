@@ -76,16 +76,21 @@ OverlayIIgs: OverlayIIgs.c.o OverlayIIgs-flags.c.o $(LIBRARIES)
 
 
 LTC_H = libtomcrypt/src/hashes/
-lib/libtomcrypt : $(LTC_H)/md2.c.o $(LTC_H)/md4.c.o $(LTC_H)/md5.c.o $(LTC_H)/sha1.c.o | lib
+lib/libtomcrypt : \
+	$(LTC_H)/md2.c.o $(LTC_H)/md4.c.o $(LTC_H)/md5.c.o \
+	$(LTC_H)/sha1.c.o $(LTC_H)/blake2s.c.o \
+	$(LTC_H)/rmd128.c.o $(LTC_H)/rmd160.c.o $(LTC_H)/rmd256.c.o $(LTC_H)/rmd320.c.o  \
+	$(LTC_H)/sha2/sha224.c.o $(LTC_H)/sha2/sha256.c.o $(LTC_H)/sha2/sha384.c.o \
+	| lib
 	$(MPW) Lib $(LIBFLAGS) -o $@ $^ 
 
 
-$(LTC_H)%.c.o : $(LTC_H)%.c
-	$(MPW) SC $(SCFLAGS)  $< -o $@
+# $(LTC_H)%.c.o : $(LTC_H)%.c
+# 	$(MPW) --stack=0x10000 SC $(SCFLAGS)  $< -o $@
 
 
 %.c.o : %.c
-	$(MPW) SC $(SCFLAGS) $< -o $@
+	$(MPW) --stack=0x10000 SC $(SCFLAGS) $< -o $@
 
 % : %.c.o $(LIBRARIES)
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
