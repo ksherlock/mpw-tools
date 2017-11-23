@@ -330,7 +330,8 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Error: directory destination is not yet supported.\n");
 		exit(1);
 	}
-	if (m == 0 && opts['r' - 'a'])
+//	if (m == 0 && opts['r' - 'a'])
+	if (m == 0)
 	{
 		// workaround to create the file if 
 		// only copying the resource fork.
