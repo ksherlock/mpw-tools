@@ -163,7 +163,7 @@ int copyFork(const char *src, const char *dest, unsigned fork)
 		rfd = open(src, O_RDONLY | O_BINARY | fork);
 		if (rfd < 0)
 		{
-			fprintf(stderr, "No resource fork %s\n", src);
+			// no resource fork
 			return 0;
 		}
 	}
@@ -330,8 +330,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Error: directory destination is not yet supported.\n");
 		exit(1);
 	}
-//	if (m == 0 && opts['r' - 'a'])
-	if (m == 0)
+	if (m == 0 && opts['r' - 'a'])
 	{
 		// workaround to create the file if 
 		// only copying the resource fork.
