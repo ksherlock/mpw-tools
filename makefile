@@ -33,7 +33,7 @@ LIBS = \
 # LDFLAGS = -d -c 'MPS ' -t MPST
 
 TARGETS = Help GetEnv Delete Duplicate Files SetFile OverlayIIgs ListRez ListRezIIgs\
-	LSegIIgs MakeEnums ReadGlobal Parameters Echo md5
+	LSegIIgs MakeEnums ReadGlobal Parameters Echo md5 Rename
 
 all: $(TARGETS)
 
@@ -74,6 +74,8 @@ OverlayIIgs: OverlayIIgs.c.o OverlayIIgs-flags.c.o $(LIBRARIES)
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 
+Rename: Rename.c.o Rename-flags.c.o FileCommon.c.o $(LIBRARIES)
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 LTC_H = libtomcrypt/src/hashes/
 lib/libtomcrypt : \
