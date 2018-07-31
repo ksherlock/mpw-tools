@@ -62,7 +62,7 @@ lib/libc: libc/strcasecmp.c.o libc/_getprogname.c.o libc/err.c.o libc/getopt.c.o
 
 
 
-Delete: Delete.c.o Delete-flags.c.o $(LIBRARIES)
+Delete: Delete.c.o Delete-flags.c.o FileCommon.c.o $(LIBRARIES)
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
 
