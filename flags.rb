@@ -333,7 +333,7 @@ int FlagsParse(int argc, char **argv)
 % end # options.each
 
       default:
-        fprintf(stderr, "### <%= name %> - \"-%c\" is not an option.", c);
+        fprintf(stderr, "### <%= name %> - \"-%c\" is not an option.\n", c);
         exit(1); 
       }
             

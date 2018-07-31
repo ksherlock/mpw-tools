@@ -89,7 +89,7 @@ int FlagsParse(int argc, char **argv)
         break;
 
       default:
-        fprintf(stderr, "### Delete - \"-%c\" is not an option.", c);
+        fprintf(stderr, "### Delete - \"-%c\" is not an option.\n", c);
         exit(1); 
       }
             
