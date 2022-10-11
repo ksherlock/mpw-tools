@@ -77,6 +77,12 @@ OverlayIIgs: OverlayIIgs.c.o OverlayIIgs-flags.c.o $(LIBRARIES)
 Rename: Rename.c.o Rename-flags.c.o FileCommon.c.o $(LIBRARIES)
 	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
 
+
+Date : Date.c.o Date-flags.c.o $(LIBRARIES)
+	$(MPW) Link $(LDFLAGS) -o $@ $^ $(LIBS) 
+
+
+
 LTC_H = libtomcrypt/src/hashes/
 lib/libtomcrypt : \
 	$(LTC_H)/md2.c.o $(LTC_H)/md4.c.o $(LTC_H)/md5.c.o \

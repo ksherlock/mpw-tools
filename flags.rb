@@ -75,6 +75,7 @@ class Option
 
 		@char = hash['char'].to_s
 		@argument = hash['argument'] || false
+		@ignore = hash['ignore'] || false
 
 		@flag_name = hash['flag_name']
 		@flag_name = @flag_name.to_s if @flag_name
@@ -89,18 +90,32 @@ class Option
 			raise "Invalid xor type: #{@xor}"
 		end
 
+		@long = @char.length > 1
+
 		@xor.map! { |x| x.to_s }
 	end
 
-	attr_reader :char, :xor, :argument
+	attr_reader :char, :xor, :argument, :long
 
 	def flag_name
 		return @flag_name if @flag_name
 		return self.class.flag_name(@char)
 	end
 
+	def field_type
+		return :optarg if @argument
+		return :null if @ignore
+		return :bit
+	end
+
 	def self.flag_name(char)
-		return '_' + @@map[char] if @@map[char] 
+		if char.length > 1
+			name = char
+			name = '_' + name.gsub(/[^A-Za-z0-9_]/, '_')
+			name = name.gsub('/_+/', '_')
+			return name
+		end
+		return '_' + @@map[char] if @@map[char]
 		return '_' + char
 	end
 
@@ -108,14 +123,14 @@ class Option
 end
 
 # better ARGF.
-def argf_each 
+def argf_each
 
 	if ARGV.count > 0
 
 		ARGV.each {|file|
 
-			File.open(file, "r") {|io| 
-				yield file, io 
+			File.open(file, "r") {|io|
+				yield file, io
 			}
 		}
 
@@ -173,15 +188,13 @@ argf_each {|filename, file|
 		else
 			raise "Unexpected data type: #{opt}"
 		end
-
+		opt['char'] = opt['char'].downcase if case_insensitive
 		Option.new(opt)
 	}
 
-	if case_insensitive
-		options.each {|opt|
-			opt.char.downcase!
-		}
-	end
+
+	long_options = options.select {|opt| opt.long }
+	long_options = long_options
 
 	#data[options] = options
 	# check for help?
@@ -203,13 +216,13 @@ argf_each {|filename, file|
 	io.write(header_preamble)
 	# two passes - one with arguments, one without.
 	options.each {|opt|
-		if opt.argument
+		if opt.field_type == :optarg
 			io.printf("    char *%s;\n", opt.flag_name)
 		end
 	}
 	io.puts()
 	options.each {|opt|
-		if !opt.argument
+		if opt.field_type == :bit
 			io.printf("    unsigned %s:1;\n", opt.flag_name)
 		end
 	}
@@ -217,6 +230,7 @@ argf_each {|filename, file|
 
 	io.write(header_postamble)
 	io.close unless io == $stdout
+
 
 
 #	#puts options.to_yaml
@@ -261,41 +275,54 @@ int FlagsParse(int argc, char **argv)
 
   memset(&flags, 0, sizeof(flags));
 
-  for (i = 1, mindex = 1, eof = 0; i < argc; ++i)
-  {    
+  for (i = 1, mindex = 1, eof = 0; i < argc; ++i) {
     cp = argv[i];
     c = cp[0];
-      
-    if (c != '-' || eof)
-    {
+
+    if (c != '-' || eof) {
       if (i != mindex) argv[mindex] = argv[i];
       mindex++;
       continue;    	
     }
-      
+
     // -- = end of options.
-    if (cp[1] == '-' && cp[2] == 0)
-    {
+    if (cp[1] == '-' && cp[2] == 0) {
       eof = 1;
       continue;
     }
-   
+% long_options.each do |opt|
+% flag_name = 'flags.' + opt.flag_name
+% strcmp = case_insensitive ? 'strcasecmp' : 'strcmp'
+    if (!<%= strcmp %>("<%= opt.char %>", cp+1)) {
+% case opt.field_type
+% when :optarg
+        if (++i >= argc) {
+          fputs("### <%= name %> - \"-<%= opt.char %>\" requires an argument.\n", stderr);
+          exit(1);
+        }
+        <%= flag_name %> = argv[i];
+% when :bit
+        <%= flag_name %> = 1;
+% end
+        continue;
+    }
+% end
+
     // now scan all the flags in the string...
     optarg = NULL;
-    for (j = 1; ; ++j)
-    {          
+    for (j = 1; ; ++j) {
       c = cp[j];
       if (c == 0) break;
-          
-      switch (c)
-      {
-% if help && !options.find_index {|x| x.char == 'h' } 
+
+      switch (c) {
+% if help && !options.find_index {|x| x.char == 'h' }
       case 'h':
         FlagsHelp();
         exit(0);
-% end            
+% end
 % #
 % options.each do |opt|
+% next if opt.long
       case '<%= escape_cstr(opt.char) %>':
 % if case_insensitive && opt.char =~ /^[a-z]$/
       case '<%= escape_cstr(opt.char.upcase) %>':
@@ -305,16 +332,13 @@ int FlagsParse(int argc, char **argv)
 % #
 % if opt.argument
         // -xarg or -x arg
-        ++j;  
-        if (cp[j])
-        {
+        ++j;
+        if (cp[j]) {
           optarg = cp + j;
         }
-        else
-        {
-          if (++i >= argc)
-          {
-            fputs("### <%= name %> - \"-<%= opt.char %>\" requires an argument.\n", stderr); 
+        else {
+          if (++i >= argc) {
+            fputs("### <%= name %> - \"-<%= opt.char %>\" requires an argument.\n", stderr);
             exit(1);
           }
           optarg = argv[i];
@@ -334,11 +358,11 @@ int FlagsParse(int argc, char **argv)
 
       default:
         fprintf(stderr, "### <%= name %> - \"-%c\" is not an option.\n", c);
-        exit(1); 
+        exit(1);
       }
-            
+
       if (optarg) break;
-    }    
+    }
   }
 
   return mindex;

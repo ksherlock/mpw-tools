@@ -1,0 +1,28 @@
+---
+case_insensitive: true
+name: Date
+options:
+  - a
+  - c: { argument : true }
+  - d
+  - n
+  - s
+  - s4
+  - st
+  - t
+  - u
+  - utc
+  - x: { argument : true }
+help: 
+  - Date [options]
+  -   -a                      abbreviated date (e.g. Wed, Jun 14, 1995)
+  -   -s                      short date (e.g. 6/14/95)
+  -   -s4                     short date, using 4-digit year (e.g. 6/14/1995)
+  -   -u                      uniform output format, "YYYY-MM-DD HH:MM:SS"
+  -   -st                     omit seconds from time format
+  -   -d                      write date only
+  -   -t                      write time only
+  -   -c seconds              write date corresponding to seconds
+  -   -x date                 write seconds corresponding to date
+  -   -n                      write seconds since January 1, 1904
+  -   -utc                    write output converted to Universal Time Coordinates

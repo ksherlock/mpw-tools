@@ -91,7 +91,7 @@ int do_rename(const unsigned char *src, const unsigned char *dest) {
 		fprintf(stderr, "# %s\n", GetSysErrText(err, error_message));
 		return 2;
 	}
-	err = Rename((const unsigned char *)src, 0, (const unsigned char *)dest);
+	err = HRename(0, 0, src, dest);
 	if (err) {
 		fprintf(stderr, "### Rename - unable to rename %s to %s\n", src+1, dest+1);
 		fprintf(stderr, "# %s\n", GetSysErrText(err, error_message));

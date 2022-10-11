@@ -98,7 +98,6 @@ int main(int argc, char **argv)
 {
 
 	FInfo newFI;
-	int optind;
 	int ok;
 	int i;
 
@@ -161,6 +160,35 @@ int main(int argc, char **argv)
 		
 		if (flags._t) fi.fdType = newFI.fdType;
 		if (flags._c) fi.fdCreator = newFI.fdCreator;
+		if (flags._a) {
+			char *cp = flags._a;
+			while (*cp) {
+				static char *attr = "AaVvBbSsTtCcOoLlIiNnMmWwDd";
+				int offset;
+				char *pos;
+				char c = *cp++;
+				pos = strchr(attr, c);
+				if (pos == NULL) {
+					fprintf(stderr, "SetFile: %c is not a valid flag letter\n", c);
+					exit(1);
+				}
+				offset = (int)(pos - attr);
+				switch(offset) {
+					case 2: // 'V'
+						fi.fdFlags |= fInvisible;
+						break;
+					case 3: // 'v'
+						fi.fdFlags &= ~fInvisible;
+						break;
+					case 4: // 'B'
+						fi.fdFlags |= fHasBundle;
+						break;
+					case 5: // 'b'
+						fi.fdFlags &= ~fHasBundle;
+						break;
+				}
+			}
+		}
 
 		ok = SetFInfo((unsigned char *)buffer, 0, &fi);
 		if (ok != 0)
